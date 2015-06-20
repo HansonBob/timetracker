@@ -2,7 +2,7 @@ var timetracker = timetracker || {};
 timetracker.queue = new Array();
 
 timetracker.createTracker = function() {
-  timetracker.queue = timetracker.getTrackerQueue;
+  timetracker.getTrackerQueue();
 
   var newTrack = {
     "id" : timetracker.queue.length,
@@ -10,7 +10,8 @@ timetracker.createTracker = function() {
     "content" : ""
   };
 
-  timetracker.queue[timetracker.queue.length] = newTrack;
+  timetracker.queue[newTrack["id"]] = newTrack;
+  timetracker.saveTracker(newTrack["id"]);
 };
 
 timetracker.startTracker = function(id) {
@@ -22,16 +23,20 @@ timetracker.stopTracker = function(id) {
 };
 
 timetracker.saveTracker = function(id) {
-  var timestamp = timetracker.getCurrentTimestamp();
-  var content = timetracker.getTrackerContent(id);
-  
-  var newEntry = {
-    "id" : id,
-    "timestamp" : timestamp,
-    "content" : content
-  };
+  var contents = timetracker.queue[id] || {};
 
-  timetracker.queue.push(newEntry);
+  if (timetracker.config.savetype === "localStorage") {
+    var contentsString = timetracker.config.saveformatContent;
+    
+    contentsString = contentsString.replace("%id%", id);
+    contentsString = contentsString.replace("%time%", contents["time"]);
+    contentsString = contentsString.replace("%content%", contents["content"]);
+
+    localStorage.setItem(
+      timetracker.config.saveformatKey+""+id,
+      contentsString
+    );
+  }
 };
 
 timetracker.removeTracker = function(id) {
@@ -44,32 +49,42 @@ timetracker.updateTracker = function(id) {
 
 timetracker.getTrackerQueue = function() {
   if (timetracker.config.savetype === "localStorage") {
-    var saveformat = timetracker.config.saveformat;
+    var saveformatContent = timetracker.config.saveformatContent;
     var items = localStorage;
 
-    var trackerIndex = saveformat.indexOf("timetracker");
-    var idIndex = saveformat.indexOf("%id%");
-    var timeIndex = saveformat.indexOf("%time%");
-    var contentIndex = saveformat.indexOf("%content%");
+    var idIndex = saveformatContent.indexOf("%id%");
+    var timeIndex = saveformatContent.indexOf("%time%");
+    var contentIndex = saveformatContent.indexOf("%content%");
+    var indexesArray = new Array(idIndex, timeIndex, contentIndex);
+    indexesArray.sort(function(a, b) {
+      return parseInt(a) - parseInt(b);
+    });
 
     for (var i in localStorage) {
-      var checkSavedValue = localStorage[i].substring(trackerIndex, 11);
+      var checkSavedKey = i.indexOf(timetracker.config.saveformatKey);
 
-      if (checkSavedValue==="timetracker") {
-        var savedEntry = {
-          "id" : localStorage[i].substring(idIndex, 4),
-          "time" : localStorage[i].substring(timeIndex, 6),
-          "content" : localStorage[i].substring(contentIndex, 9)
-        };
+      if (checkSavedKey!=-1) {
+        var savedArray = localStorage[i].split(";");
+        var savedEntry = {};
 
-        timetracker.queue.push(savedEntry);
+        for (var k=0; k<indexesArray.length; k++) {
+          if (indexesArray[k] === idIndex) {
+            savedEntry["id"] = savedArray[k];
+          }
+
+          if (indexesArray[k] === timeIndex) {
+            savedEntry["time"] = savedArray[k];
+          }
+
+          if (indexesArray[k] === contentIndex) {
+            savedEntry["content"] = savedArray[k];
+          }
+        }
+
+        timetracker.queue[savedEntry["id"]] = savedEntry;
       }
     }
   }
-};
-
-timetracker.saveTrackerContent = function(id) {
-
 };
 
 timetracker.removeTrackerContent = function(id) {

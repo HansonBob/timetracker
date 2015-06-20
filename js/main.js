@@ -1,5 +1,6 @@
 function updateTrackList(trackcontainer) {
-  timetracker.getTrackerQueue()
+  trackcontainer.innerHTML = "";
+  timetracker.getTrackerQueue();
   var queue = timetracker.queue;
 
   for (var i in queue) {
@@ -7,6 +8,7 @@ function updateTrackList(trackcontainer) {
     li.innerHTML = "<div class=\"id\">"+queue[i].id+"</div>";
     li.innerHTML += "<div class=\"time\">"+queue[i].time+"</div>";
     li.innerHTML += "<div class=\"content\">"+queue[i].content+"</div>";
+    li.innerHTML += "<input type=\"hidden\" name=\"id[]\" value=\""+queue[i].id+"\" />";
 
     trackcontainer.appendChild(li);
   }
@@ -14,9 +16,14 @@ function updateTrackList(trackcontainer) {
 
 window.onload = function() {
   var container = timetracker.getContainer();
+
+  var form = document.createElement("form");
+  form.setAttribute("id", "formTimetracks");
+  container.appendChild(form);
+
   var tracks = document.createElement("ul");
   tracks.setAttribute("id", "tracks");
-  container.appendChild(tracks);
+  form.appendChild(tracks);
 
   
   updateTrackList(tracks);
@@ -34,6 +41,10 @@ window.onload = function() {
 
   var deleteTrack = document.getElementById("delete");
   deleteTrack.addEventListener("click", function() {
-    timetracker.removeTracker();
+    var trackIds = document.getElementById("formTimetracks").elements["id[]"];
+
+    for (var i=0; i < trackIds.length; i++) {
+      timetracker.removeTracker(trackIds[i].value);
+    };
   }, true);
 };
