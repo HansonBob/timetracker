@@ -9,6 +9,7 @@ function updateTrackList(trackcontainer) {
     li.innerHTML += "<div class=\"time\">"+queue[i].time+"</div>";
     li.innerHTML += "<div class=\"content\">"+queue[i].content+"</div>";
     li.innerHTML += "<input type=\"hidden\" name=\"id[]\" value=\""+queue[i].id+"\" />";
+    li.innerHTML += "<input type=\"checkbox\" name=\"checked[]\" value=\""+queue[i].id+"\" />";
 
     trackcontainer.appendChild(li);
   }
@@ -41,10 +42,11 @@ window.onload = function() {
 
   var deleteTrack = document.getElementById("delete");
   deleteTrack.addEventListener("click", function() {
-    var trackIds = document.getElementById("formTimetracks").elements["id[]"];
-
+    var trackIds = document.getElementById("formTimetracks").elements["checked[]"];
+alert("abc");
     for (var i=0; i < trackIds.length; i++) {
-      timetracker.removeTracker(trackIds[i].value);
+document.body.innerHTML += trackIds[i].getAttribute("checked")+"<br />";
+      //timetracker.removeTracker(trackIds[i].value);
     };
   }, true);
 };
