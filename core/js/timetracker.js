@@ -45,7 +45,7 @@ timetracker.removeTracker = function(id) {
   }
 
   if (typeof timetracker.queue[id]!="undefined") {
-    delete(timetracker.queue[id]);
+    timetracker.queue = timetracker.queue.splice(timetracker.queue[id], 1);
   }
 };
 

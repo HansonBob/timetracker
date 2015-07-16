@@ -2,7 +2,7 @@ function updateTrackList(trackcontainer) {
   trackcontainer.innerHTML = "";
   timetracker.getTrackerQueue();
   var queue = timetracker.queue;
-
+  
   for (var i in queue) {
     var li = document.createElement("li");
     li.innerHTML = "<div class=\"id\">"+queue[i].id+"</div>";
@@ -43,10 +43,12 @@ window.onload = function() {
   var deleteTrack = document.getElementById("delete");
   deleteTrack.addEventListener("click", function() {
     var trackIds = document.getElementById("formTimetracks").elements["checked[]"];
-alert("abc");
     for (var i=0; i < trackIds.length; i++) {
-document.body.innerHTML += trackIds[i].getAttribute("checked")+"<br />";
-      //timetracker.removeTracker(trackIds[i].value);
+      if (trackIds[i].checked==true && typeof trackIds[i].value!="undefined") {
+        timetracker.removeTracker(trackIds[i].value);
+      }
     };
+
+    updateTrackList(tracks);
   }, true);
 };
