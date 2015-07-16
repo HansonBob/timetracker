@@ -40,7 +40,13 @@ timetracker.saveTracker = function(id) {
 };
 
 timetracker.removeTracker = function(id) {
-  
+  if (timetracker.config.savetype === "localStorage") {
+    localStorage.removeItem(timetracker.config.saveformatKey+""+id);
+  }
+
+  if (typeof timetracker.queue[id]!="undefined") {
+    timetracker.queue = timetracker.queue.splice(timetracker.queue[id], 1);
+  }
 };
 
 timetracker.updateTracker = function(id) {
@@ -92,7 +98,10 @@ timetracker.removeTrackerContent = function(id) {
 };
 
 timetracker.getTrackerContent = function(id) {
-
+  if (typeof timetracker.queue[id]!="undefined") {
+    return timetracker.queue[id];
+  }
+  return false;
 };
 
 timetracker.getCurrentTimestamp = function() {
