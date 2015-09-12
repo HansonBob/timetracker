@@ -4,5 +4,6 @@ timetracker.config = {
   "savetype" : "localStorage",
   "saveformatKey" : "timetracker_",
   "saveformatContent" : "%id%;%time%;%content%",
-  "containerId" : "container"
+  "containerId" : "container",
+  "language" : "EN"
 };

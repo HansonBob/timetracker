@@ -1,4 +1,3 @@
-var timetracker = timetracker || {};
 timetracker.queue = new Array();
 
 timetracker.createTracker = function() {
@@ -15,11 +14,18 @@ timetracker.createTracker = function() {
 };
 
 timetracker.startTracker = function(id) {
+  if (timetracker.queue[id].time<=0) {
+    timetracker.queue[id].time = timetracker.getCurrentTimestamp();
+  } else {
+    
+  }
 
+  timetracker.saveTracker(id);
 };
 
 timetracker.stopTracker = function(id) {
-  
+  timetracker.queue[id].time = timetracker.getCurrentTimestamp()-timetracker.queue[id].time;
+  timetracker.saveTracker(id);
 };
 
 timetracker.saveTracker = function(id) {
@@ -124,3 +130,12 @@ timetracker.getContainer = function() {
     return document.getElementById(timetracker.config.containerId);
   }
 }
+
+timetracker.t = function(a, b) {
+  var b = b || new Array();
+  var timetrackerLang = timetracker.config.language;
+
+  // ToDo get language string and return translation
+
+  return a;
+};

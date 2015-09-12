@@ -5,11 +5,16 @@ function updateTrackList(trackcontainer) {
   
   for (var i in queue) {
     var li = document.createElement("li");
+    var trackControls = "<a class=\"start\" onclick=\"timetracker.startTracker("+queue[i].id+");\">"+timetracker.t("Start")+"</a>";
+    trackControls += "<a class=\"stop\" onclick=\"timetracker.stopTracker("+queue[i].id+");\">"+timetracker.t("Stop")+"</a>";
+    trackControls += "<a class=\"save\" onclick=\"timetracker.saveTracker("+queue[i].id+");\">"+timetracker.t("Save changes")+"</a>";
+
     li.innerHTML = "<div class=\"id\">"+queue[i].id+"</div>";
-    li.innerHTML += "<div class=\"time\">"+queue[i].time+"</div>";
-    li.innerHTML += "<div class=\"content\">"+queue[i].content+"</div>";
+    li.innerHTML += "<div class=\"time\">"+timetracker.getTimestampInSeconds(queue[i].time)+"</div>";
+    li.innerHTML += "<textarea class=\"content\">"+queue[i].content+"</textarea>";
     li.innerHTML += "<input type=\"hidden\" name=\"id[]\" value=\""+queue[i].id+"\" />";
     li.innerHTML += "<input type=\"checkbox\" name=\"checked[]\" value=\""+queue[i].id+"\" />";
+    li.innerHTML += "<div class=\"controls\">"+trackControls+"</div>";
 
     trackcontainer.appendChild(li);
   }
