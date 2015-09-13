@@ -10,7 +10,9 @@ function updateTrackList(trackcontainer) {
     trackControls += "<a class=\"save\" onclick=\"timetracker.saveTracker("+queue[i].id+");\">"+timetracker.t("Save changes")+"</a>";
 
     li.innerHTML = "<div class=\"id\">"+queue[i].id+"</div>";
-    li.innerHTML += "<div class=\"time\">"+timetracker.getTimestampInSeconds(queue[i].time)+"</div>";
+    li.innerHTML += "<div class=\"timestart\">"+timetracker.getTimestampInSeconds(queue[i].timestart)+"</div>";
+    li.innerHTML += "<div class=\"timeend\">"+timetracker.getTimestampInSeconds(queue[i].timeend)+"</div>";
+    li.innerHTML += "<div class=\"timediff\">"+timetracker.getTimestampInSeconds(queue[i].timeend-queue[i].timestart)+"</div>";
     li.innerHTML += "<textarea class=\"content\">"+queue[i].content+"</textarea>";
     li.innerHTML += "<input type=\"hidden\" name=\"id[]\" value=\""+queue[i].id+"\" />";
     li.innerHTML += "<input type=\"checkbox\" name=\"checked[]\" value=\""+queue[i].id+"\" />";

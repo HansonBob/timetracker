@@ -5,7 +5,8 @@ timetracker.createTracker = function() {
 
   var newTrack = {
     "id" : timetracker.queue.length,
-    "time" : 0,
+    "timestart" : 0,
+    "timeend" : 0,
     "content" : ""
   };
 
@@ -14,17 +15,17 @@ timetracker.createTracker = function() {
 };
 
 timetracker.startTracker = function(id) {
-  if (timetracker.queue[id].time<=0) {
-    timetracker.queue[id].time = timetracker.getCurrentTimestamp();
+  if (timetracker.queue[id].timestart!=0 && timetracker.queue[id].timeend!=0) {
+    timetracker.queue[id].timestart = timetracker.getCurrentTimestamp()-(timetracker.queue[id].timeend-timetracker.queue[id].timestart);
   } else {
-    
+    timetracker.queue[id].timestart = timetracker.getCurrentTimestamp();
   }
 
   timetracker.saveTracker(id);
 };
 
 timetracker.stopTracker = function(id) {
-  timetracker.queue[id].time = timetracker.getCurrentTimestamp()-timetracker.queue[id].time;
+  timetracker.queue[id].timeend = timetracker.getCurrentTimestamp();
   timetracker.saveTracker(id);
 };
 
@@ -35,7 +36,8 @@ timetracker.saveTracker = function(id) {
     var contentsString = timetracker.config.saveformatContent;
     
     contentsString = contentsString.replace("%id%", id);
-    contentsString = contentsString.replace("%time%", contents["time"]);
+    contentsString = contentsString.replace("%timestart%", contents["timestart"]);
+    contentsString = contentsString.replace("%timeend%", contents["timeend"]);
     contentsString = contentsString.replace("%content%", contents["content"]);
 
     localStorage.setItem(
@@ -65,9 +67,10 @@ timetracker.getTrackerQueue = function() {
     var items = localStorage;
 
     var idIndex = saveformatContent.indexOf("%id%");
-    var timeIndex = saveformatContent.indexOf("%time%");
+    var timestartIndex = saveformatContent.indexOf("%timestart%");
+    var timeendIndex = saveformatContent.indexOf("%timeend%");
     var contentIndex = saveformatContent.indexOf("%content%");
-    var indexesArray = new Array(idIndex, timeIndex, contentIndex);
+    var indexesArray = new Array(idIndex, timestartIndex, timeendIndex, contentIndex);
     indexesArray.sort(function(a, b) {
       return parseInt(a) - parseInt(b);
     });
@@ -84,8 +87,12 @@ timetracker.getTrackerQueue = function() {
             savedEntry["id"] = savedArray[k];
           }
 
-          if (indexesArray[k] === timeIndex) {
-            savedEntry["time"] = savedArray[k];
+          if (indexesArray[k] === timestartIndex) {
+            savedEntry["timestart"] = savedArray[k];
+          }
+
+          if (indexesArray[k] === timeendIndex) {
+            savedEntry["timeend"] = savedArray[k];
           }
 
           if (indexesArray[k] === contentIndex) {

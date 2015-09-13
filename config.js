@@ -3,7 +3,7 @@ var timetracker = timetracker || {};
 timetracker.config = {
   "savetype" : "localStorage",
   "saveformatKey" : "timetracker_",
-  "saveformatContent" : "%id%;%time%;%content%",
+  "saveformatContent" : "%id%;%timestart%;%timeend%;%content%",
   "containerId" : "container",
   "language" : "EN"
 };
