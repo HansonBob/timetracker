@@ -13,7 +13,7 @@ function updateTrackList(trackcontainer) {
     li.innerHTML += "<div class=\"timestart\">"+timetracker.getTimestampInSeconds(queue[i].timestart)+"</div>";
     li.innerHTML += "<div class=\"timeend\">"+timetracker.getTimestampInSeconds(queue[i].timeend)+"</div>";
     li.innerHTML += "<div class=\"timediff\">"+timetracker.getTimestampInSeconds(queue[i].timeend-queue[i].timestart)+"</div>";
-    li.innerHTML += "<textarea class=\"content\">"+queue[i].content+"</textarea>";
+    li.innerHTML += "<textarea onkeyup=\"timetracker.setMessage("+queue[i].id+", this.value);\" class=\"content\">"+queue[i].content+"</textarea>";
     li.innerHTML += "<input type=\"hidden\" name=\"id[]\" value=\""+queue[i].id+"\" />";
     li.innerHTML += "<input type=\"checkbox\" name=\"checked[]\" value=\""+queue[i].id+"\" />";
     li.innerHTML += "<div class=\"controls\">"+trackControls+"</div>";
@@ -50,11 +50,16 @@ window.onload = function() {
   var deleteTrack = document.getElementById("delete");
   deleteTrack.addEventListener("click", function() {
     var trackIds = document.getElementById("formTimetracks").elements["checked[]"];
-    for (var i=0; i < trackIds.length; i++) {
-      if (trackIds[i].checked==true && typeof trackIds[i].value!="undefined") {
-        timetracker.removeTracker(trackIds[i].value);
-      }
-    };
+
+    if (typeof trackIds=="object" && typeof trackIds.length=="undefined") {
+      timetracker.removeTracker(trackIds.value);
+    } else {
+      for (var i=0; i < trackIds.length; i++) {
+        if (trackIds[i].checked==true && typeof trackIds[i].value!="undefined") {
+          timetracker.removeTracker(trackIds[i].value);
+        }
+      };
+    }
 
     updateTrackList(tracks);
   }, true);

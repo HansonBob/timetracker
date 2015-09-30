@@ -21,7 +21,8 @@ timetracker.startTracker = function(id) {
     timetracker.queue[id].timestart = timetracker.getCurrentTimestamp();
   }
 
-  timetracker.saveTracker(id);
+  timetracker.queue[id].timeend = 1;
+  //timetracker.saveTracker(id);
 };
 
 timetracker.stopTracker = function(id) {
@@ -31,6 +32,11 @@ timetracker.stopTracker = function(id) {
 
 timetracker.saveTracker = function(id) {
   var contents = timetracker.queue[id] || {};
+
+  if (timetracker.queue[id].timeend==1) {
+    timetracker.stopTracker(id);
+    contents["timeend"] = timetracker.queue[id].timeend;
+  }
 
   if (timetracker.config.savetype === "localStorage") {
     var contentsString = timetracker.config.saveformatContent;
@@ -145,4 +151,9 @@ timetracker.t = function(a, b) {
   // ToDo get language string and return translation
 
   return a;
+};
+
+timetracker.setMessage = function(id, message) {
+  timetracker.queue[id].content = message;
+  timetracker.saveTracker(id);
 };
