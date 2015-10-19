@@ -5,19 +5,30 @@ function updateTrackList(trackcontainer) {
   
   for (var i in queue) {
     var li = document.createElement("li");
+    li.setAttribute("id", queue[i].id);
+
     var trackControls = "<a class=\"start\" onclick=\"timetracker.startTracker("+queue[i].id+");\">"+timetracker.t("Start")+"</a>";
     trackControls += "<a class=\"stop\" onclick=\"timetracker.stopTracker("+queue[i].id+");\">"+timetracker.t("Stop")+"</a>";
     trackControls += "<a class=\"save\" onclick=\"timetracker.saveTracker("+queue[i].id+");\">"+timetracker.t("Save changes")+"</a>";
+
+    var newTimerElement = document.createElement("div");
+    newTimerElement.setAttribute("class", "timeshow");
+
+    timetracker.showTimer(queue[i].id, newTimerElement);
 
     li.innerHTML = "<div class=\"id\">"+queue[i].id+"</div>";
     li.innerHTML += "<div class=\"timestart\">"+timetracker.getTimestampInSeconds(queue[i].timestart)+"</div>";
     li.innerHTML += "<div class=\"timeend\">"+timetracker.getTimestampInSeconds(queue[i].timeend)+"</div>";
     li.innerHTML += "<div class=\"timediff\">"+timetracker.getTimestampInSeconds(queue[i].timeend-queue[i].timestart)+"</div>";
+    li.innerHTML += "<div class=\"timeshow\"></div>";
+    
+    li.innerHTML += "<div id=\"showtimer"+queue[i].id+"\" class=\"showtimer\">"+timetracker.getTimeFromMilliseconds((queue[i].timeend-queue[i].timestart))+"</div>";
     li.innerHTML += "<textarea onkeyup=\"timetracker.setMessage("+queue[i].id+", this.value);\" class=\"content\">"+queue[i].content+"</textarea>";
     li.innerHTML += "<input type=\"hidden\" name=\"id[]\" value=\""+queue[i].id+"\" />";
     li.innerHTML += "<input type=\"checkbox\" name=\"checked[]\" value=\""+queue[i].id+"\" />";
     li.innerHTML += "<div class=\"controls\">"+trackControls+"</div>";
 
+    li.appendChild(newTimerElement);
     trackcontainer.appendChild(li);
   }
 }
