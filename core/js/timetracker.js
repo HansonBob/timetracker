@@ -15,7 +15,7 @@ timetracker.createTracker = function() {
   timetracker.saveTracker(newTrack["id"]);
 };
 
-timetracker.startTracker = function(id) {
+timetracker.startTracker = function(id, element) {
   if (timetracker.queue[id].timestart!=0 && timetracker.queue[id].timeend!=0) {
     timetracker.queue[id].timestart = timetracker.getCurrentTimestamp()-(timetracker.queue[id].timeend-timetracker.queue[id].timestart);
   } else {
@@ -23,26 +23,25 @@ timetracker.startTracker = function(id) {
   }
 
   timetracker.queue[id].timeend = 1;
-  timetracker.showTimer(id, document.getElementById("showtimer"+id));
-  //timetracker.saveTracker(id);
+  if (typeof element!="undefined") {
+    timetracker.showTimer(id, element);
+  }
+  timetracker.saveTracker(id);
 };
 
 timetracker.stopTracker = function(id) {
-  timetracker.queue[id].timeend = timetracker.getCurrentTimestamp();
-  timetracker.saveTracker(id);
+  if (timetracker.queue[id].timeend==0 || timetracker.queue[id].timeend==1) {
+    timetracker.queue[id].timeend = timetracker.getCurrentTimestamp();
+    timetracker.saveTracker(id);
 
-  if (typeof timetracker.timers[id]!=="undefined") {
-    window.clearTimeout(timetracker.timers[id]);
+    if (typeof timetracker.timers[id]!=="undefined") {
+      window.clearTimeout(timetracker.timers[id]);
+    }
   }
 };
 
 timetracker.saveTracker = function(id) {
   var contents = timetracker.queue[id] || {};
-
-  if (timetracker.queue[id].timeend==1) {
-    timetracker.stopTracker(id);
-    contents["timeend"] = timetracker.queue[id].timeend;
-  }
 
   if (timetracker.config.savetype === "localStorage") {
     var contentsString = timetracker.config.saveformatContent;
@@ -166,12 +165,6 @@ timetracker.setMessage = function(id, message) {
 
 timetracker.showTimer = function(id, element) {
   if (timetracker.queue[id].timeend==1 || (timetracker.queue[id].timeend==0 && timetracker.queue[id].timestart!=0)) {
-    if (timetracker.queue[id].timeend==0) {
-      var currentDiff = timetracker.getCurrentTimestamp()-timetracker.queue[id].timestart;
-    } else {
-      //var currentDiff = timetracker.getCurrentTimestamp()-(timetracker.queue[id].timeend-timetracker.queue[id].timestart);
-    }
-
     var currentDiff = timetracker.getCurrentTimestamp()-timetracker.queue[id].timestart;
     var formattedTime = timetracker.getTimeFromMilliseconds(currentDiff);
     
