@@ -5,12 +5,50 @@ function updateTrackList(trackcontainer) {
   
   for (var i in queue) {
     var li = document.createElement("li");
+    li.setAttribute("id", queue[i].id);
+
+    var newTimerElement = document.createElement("div");
+    newTimerElement.setAttribute("class", "timeshow");
+    newTimerElement.innerHTML = timetracker.getTimeFromMilliseconds((queue[i].timeend-queue[i].timestart));
+
+    timetracker.showTimer(queue[i].id, newTimerElement);
+
+    var newStartElement = document.createElement("a");
+    newStartElement.setAttribute("class", "start");
+    newStartElement.addEventListener("click", function(){
+      timetracker.startTracker(queue[i].id, newTimerElement);
+    }, true);
+    newStartElement.innerHTML = timetracker.t("Start");
+
+    var newStopElement = document.createElement("a");
+    newStopElement.setAttribute("class", "stop");
+    newStopElement.addEventListener("click", function(){
+      timetracker.stopTracker(queue[i].id);
+    }, true);
+    newStopElement.innerHTML = timetracker.t("Stop");
+
+    /*
+    var newSaveElement = document.createElement("a");
+    newSaveElement.setAttribute("class", "save");
+    newSaveElement.addEventListener("click", function(){
+      timetracker.saveTracker(queue[i].id);
+    }, true);
+    newSaveElement.innerHTML = timetracker.t("Save changes");
+    */
+
     li.innerHTML = "<div class=\"id\">"+queue[i].id+"</div>";
-    li.innerHTML += "<div class=\"time\">"+queue[i].time+"</div>";
-    li.innerHTML += "<div class=\"content\">"+queue[i].content+"</div>";
+    li.innerHTML += "<div class=\"timestart\">"+timetracker.getTimestampInSeconds(queue[i].timestart)+"</div>";
+    li.innerHTML += "<div class=\"timeend\">"+timetracker.getTimestampInSeconds(queue[i].timeend)+"</div>";
+    li.innerHTML += "<div class=\"timediff\">"+timetracker.getTimestampInSeconds(queue[i].timeend-queue[i].timestart)+"</div>";
+
+    li.innerHTML += "<textarea onkeyup=\"timetracker.setMessage("+queue[i].id+", this.value);\" class=\"content\">"+queue[i].content+"</textarea>";
     li.innerHTML += "<input type=\"hidden\" name=\"id[]\" value=\""+queue[i].id+"\" />";
     li.innerHTML += "<input type=\"checkbox\" name=\"checked[]\" value=\""+queue[i].id+"\" />";
 
+    li.appendChild(newStartElement);
+    li.appendChild(newStopElement);
+    //li.appendChild(newSaveElement);
+    li.appendChild(newTimerElement);
     trackcontainer.appendChild(li);
   }
 }
@@ -43,11 +81,16 @@ window.onload = function() {
   var deleteTrack = document.getElementById("delete");
   deleteTrack.addEventListener("click", function() {
     var trackIds = document.getElementById("formTimetracks").elements["checked[]"];
-    for (var i=0; i < trackIds.length; i++) {
-      if (trackIds[i].checked==true && typeof trackIds[i].value!="undefined") {
-        timetracker.removeTracker(trackIds[i].value);
-      }
-    };
+
+    if (typeof trackIds=="object" && typeof trackIds.length=="undefined") {
+      timetracker.removeTracker(trackIds.value);
+    } else {
+      for (var i=0; i < trackIds.length; i++) {
+        if (trackIds[i].checked==true && typeof trackIds[i].value!="undefined") {
+          timetracker.removeTracker(trackIds[i].value);
+        }
+      };
+    }
 
     updateTrackList(tracks);
   }, true);
