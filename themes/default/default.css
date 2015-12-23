@@ -1,0 +1,61 @@
+body {
+  font-family: Verdana;
+  font-size: 12px;
+}
+
+.even {
+  background-color: #aaa;
+}
+
+.date-separator {
+  border: 1px solid #000;
+}
+
+.date-separator.even {
+  background-color: #000;
+  color: #fff;
+}
+
+#tracks {
+  list-style: none;
+  margin: 0px;
+  padding: 0px;
+}
+
+#tracks li {
+  list-style: none;
+  margin: 0px;
+  padding: 10px 10px;
+}
+
+#tracks li:after {
+  content: " ";
+  clear: both;
+  display: block;
+  height: 1px;
+  overflow: hidden;
+  width: 1px;
+}
+
+
+#tracks li:hover:not(.date-separator) {
+  background-color: #000;
+  color: #fff;
+}
+
+#tracks textarea {
+  font-family: inherit;
+  float: left;
+  margin-right: 20px;
+}
+
+#tracks .checkbox, #tracks .start, #tracks .stop {
+  cursor: pointer;
+  display: inline-block;
+  margin: 0px;
+  margin-right: 10px;
+}
+
+#tracks .id , #tracks .timestart, #tracks .timeend, #tracks .timediff {
+  display: none;
+}
