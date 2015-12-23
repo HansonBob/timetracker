@@ -3,7 +3,7 @@ var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturda
 var contents = {
   'Start' : 'Start',
   'Stop' : 'Stop',
-  'Save changes': 'Save changes',
-  'create': 'create new tracking',
-  'delete': 'delete selected tracking'
+  'Save changes': 'Änderungen speichern',
+  'create': 'Neues Tracking erstellen',
+  'delete': 'ausgewählte Trackings löschen'
 };

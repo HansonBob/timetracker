@@ -5,6 +5,6 @@ timetracker.config = {
   "saveformatKey" : "timetracker_",
   "saveformatContent" : "%id%;%timestart%;%timeend%;%content%;%date%",
   "containerId" : "container",
-  "language" : "default",
+  "language" : "de",
   "theme" : "default"
 };
