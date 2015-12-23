@@ -48,12 +48,14 @@ function updateTrackList(trackcontainer) {
         timetracker.startTracker(queue[i].id, newTimerElement, newStopElement);
       }, true);
       newStartElement.innerHTML = timetracker.t("Start");
+      newStartElement.setAttribute("title", timetracker.t("Start"));
       
       newStopElement.setAttribute("class", "stop");
       newStopElement.addEventListener("click", function(){
         timetracker.stopTracker(queue[i].id, newStopElement);
       }, true);
       newStopElement.innerHTML = timetracker.t("Stop");
+      newStopElement.setAttribute("title", timetracker.t("Stop"));
 
       /*
       var newSaveElement = document.createElement("a");
@@ -109,8 +111,8 @@ window.onload = function() {
   updateTrackList(tracks);
 
   var newMenu = document.createElement("ul");
-  newMenu.innerHTML = newMenu.innerHTML + "<li id=\"create\">create</li>";
-  newMenu.innerHTML = newMenu.innerHTML + "<li id=\"delete\">delete</li>";
+  newMenu.innerHTML = newMenu.innerHTML + "<li title=\"" + timetracker.t("create") + "\" id=\"create\">" + timetracker.t("create") + "</li>";
+  newMenu.innerHTML = newMenu.innerHTML + "<li title=\"" + timetracker.t("delete") + "\" id=\"delete\">" + timetracker.t("delete") + "</li>";
   newMenu.setAttribute("class", "menu");
   container.appendChild(newMenu);
 

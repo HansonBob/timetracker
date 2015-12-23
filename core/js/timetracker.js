@@ -184,7 +184,9 @@ timetracker.t = function(a, b) {
   var b = b || new Array();
   var timetrackerLang = timetracker.config.language;
 
-  // ToDo get language string and return translation
+  if (typeof contents[a]!="undefined") {
+    return contents[a];
+  }
 
   return a;
 };
