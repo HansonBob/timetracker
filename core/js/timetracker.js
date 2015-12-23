@@ -24,24 +24,31 @@ timetracker.createTracker = function() {
   timetracker.saveTracker(newTrack["id"]);
 };
 
-timetracker.startTracker = function(id, element) {
-  if (timetracker.queue[id].timestart!=0 && timetracker.queue[id].timeend!=0) {
-    timetracker.queue[id].timestart = timetracker.getCurrentTimestamp()-(timetracker.queue[id].timeend-timetracker.queue[id].timestart);
-  } else {
-    timetracker.queue[id].timestart = timetracker.getCurrentTimestamp();
-  }
+timetracker.startTracker = function(id, element, callbackelement) {
+  if (timetracker.queue[id].timeend!=1) {
+    if (timetracker.queue[id].timestart!=0 && timetracker.queue[id].timeend!=0) {
+      timetracker.queue[id].timestart = timetracker.getCurrentTimestamp()-(timetracker.queue[id].timeend-timetracker.queue[id].timestart);
+    } else {
+      timetracker.queue[id].timestart = timetracker.getCurrentTimestamp();
+    }
 
-  timetracker.queue[id].timeend = 1;
-  if (typeof element!="undefined") {
-    timetracker.showTimer(id, element);
+    timetracker.queue[id].timeend = 1;
+    if (typeof element!="undefined") {
+      timetracker.showTimer(id, element, callbackelement);
+    }
+
+    timetracker.saveTracker(id);
   }
-  timetracker.saveTracker(id);
 };
 
-timetracker.stopTracker = function(id) {
+timetracker.stopTracker = function(id, element) {
   if (timetracker.queue[id].timeend==0 || timetracker.queue[id].timeend==1) {
     timetracker.queue[id].timeend = timetracker.getCurrentTimestamp();
     timetracker.saveTracker(id);
+
+    if (typeof element!="undefined") {
+      element.setAttribute("data-started", "");
+    }
 
     if (typeof timetracker.timers[id]!=="undefined") {
       window.clearTimeout(timetracker.timers[id]);
@@ -187,15 +194,19 @@ timetracker.setMessage = function(id, message) {
   timetracker.saveTracker(id);
 };
 
-timetracker.showTimer = function(id, element) {
+timetracker.showTimer = function(id, element, callbackelement) {
   if (timetracker.queue[id].timeend==1 || (timetracker.queue[id].timeend==0 && timetracker.queue[id].timestart!=0)) {
     var currentDiff = timetracker.getCurrentTimestamp()-timetracker.queue[id].timestart;
     var formattedTime = timetracker.getTimeFromMilliseconds(currentDiff);
     
     element.innerHTML = formattedTime;
 
+    if (typeof callbackelement!="undefined") {
+      callbackelement.setAttribute("data-started", "started");
+    }
+
     timetracker.timers[id] = window.setTimeout(function(){
-      timetracker.showTimer(id, element);
+      timetracker.showTimer(id, element, callbackelement);
     }, 1000);
   }
 };

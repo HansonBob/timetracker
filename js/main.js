@@ -35,22 +35,23 @@ function updateTrackList(trackcontainer) {
       li.innerHTML = "";
 
       var newTimerElement = document.createElement("div");
+      var newStartElement = document.createElement("a");
+      var newStopElement = document.createElement("a");
+
       newTimerElement.setAttribute("class", "timeshow");
       newTimerElement.innerHTML = timetracker.getTimeFromMilliseconds((queue[i].timeend-queue[i].timestart));
 
-      timetracker.showTimer(queue[i].id, newTimerElement);
+      timetracker.showTimer(queue[i].id, newTimerElement, newStopElement);
 
-      var newStartElement = document.createElement("a");
       newStartElement.setAttribute("class", "start");
       newStartElement.addEventListener("click", function(){
-        timetracker.startTracker(queue[i].id, newTimerElement);
+        timetracker.startTracker(queue[i].id, newTimerElement, newStopElement);
       }, true);
       newStartElement.innerHTML = timetracker.t("Start");
-
-      var newStopElement = document.createElement("a");
+      
       newStopElement.setAttribute("class", "stop");
       newStopElement.addEventListener("click", function(){
-        timetracker.stopTracker(queue[i].id);
+        timetracker.stopTracker(queue[i].id, newStopElement);
       }, true);
       newStopElement.innerHTML = timetracker.t("Stop");
 
@@ -108,8 +109,9 @@ window.onload = function() {
   updateTrackList(tracks);
 
   var newMenu = document.createElement("ul");
-  newMenu.innerHTML = newMenu.innerHTML + "<li id=\"create\">+ create</li>";
-  newMenu.innerHTML = newMenu.innerHTML + "<li id=\"delete\">- delete</li>";
+  newMenu.innerHTML = newMenu.innerHTML + "<li id=\"create\">create</li>";
+  newMenu.innerHTML = newMenu.innerHTML + "<li id=\"delete\">delete</li>";
+  newMenu.setAttribute("class", "menu");
   container.appendChild(newMenu);
 
   var createTrack = document.getElementById("create");

@@ -1,6 +1,13 @@
 body {
   font-family: Verdana;
   font-size: 12px;
+  margin: 0px;
+}
+
+#container {
+  height: 100%;
+  position: absolute;
+  width: 100%;
 }
 
 .even {
@@ -17,9 +24,13 @@ body {
 }
 
 #tracks {
+  height: 100%;
   list-style: none;
   margin: 0px;
+  overflow: auto;
   padding: 0px;
+  position: absolute;
+  width: 100%;
 }
 
 #tracks li {
@@ -37,16 +48,20 @@ body {
   width: 1px;
 }
 
-
 #tracks li:hover:not(.date-separator) {
   background-color: #000;
   color: #fff;
+}
+
+#tracks li:last-child {
+  margin-bottom: 40px;
 }
 
 #tracks textarea {
   font-family: inherit;
   float: left;
   margin-right: 20px;
+  padding: 0px;
 }
 
 #tracks .checkbox, #tracks .start, #tracks .stop {
@@ -54,8 +69,80 @@ body {
   display: inline-block;
   margin: 0px;
   margin-right: 10px;
+  position: relative;
+}
+
+#tracks .checkbox {
+  float: right;
+}
+
+#tracks .start, #tracks .stop {
+  height: 20px;
+  overflow: hidden;
+  visibility: hidden;
+  width: 20px;
+}
+
+#tracks .stop {
+  width: 40px;
+}
+
+#tracks .start:before, #tracks .stop:before {
+  content: "\025B6";
+  display: inline-block;
+  font-size: 20px;
+  line-height: 10px;
+  visibility: visible;
+}
+
+#tracks .stop:before {
+  content: "\02588";
+  font-size: 14px;
+  line-height: 1px;
+  text-align: center;
+}
+
+#tracks [data-started='started']:before {
+  content: "\02590\A0\0258C";
 }
 
 #tracks .id , #tracks .timestart, #tracks .timeend, #tracks .timediff {
   display: none;
+}
+
+ul.menu {
+  background-color: #eee;
+  bottom: 0px;
+  height: 40px;
+  list-style: none;
+  margin: 0px;
+  padding: 0px;
+  position: absolute;
+  width: 100%;
+}
+
+ul.menu li {
+  cursor: pointer;
+  display: inline-block;
+  font-size: 20px;
+  line-height: 18px;
+  margin: 0px 10px;
+  padding: 10px 0px;
+  position: relative;
+  visibility: hidden;
+  width: 20px;
+}
+
+#create:before {
+  content: "\0002B";
+  display: block;
+  position: absolute;
+  visibility: visible;
+}
+
+#delete:before {
+  content: "\02212";
+  display: block;
+  position: absolute;
+  visibility: visible;
 }
