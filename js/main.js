@@ -2,11 +2,37 @@ function updateTrackList(trackcontainer) {
   trackcontainer.innerHTML = "";
   timetracker.getTrackerQueue();
   var queue = timetracker.queue;
+  var dateSeparator = "";
+  var dateOddEven = "even";
+  var trackOddEven = "odd";
   
   for (var i in queue) {
     (function(i) {
+      if (dateSeparator!=queue[i].date && typeof queue[i].date!="undefined") {
+        dateSeparator = queue[i].date;
+
+        var liSep = document.createElement("li");
+        liSep.setAttribute("class", "date-separator "+dateOddEven);
+        liSep.innerHTML = queue[i].date;
+        trackcontainer.appendChild(liSep);
+
+        if (dateOddEven=="odd") {
+          dateOddEven = "even";
+        } else {
+          dateOddEven = "odd";
+        }
+      }
+
+      if (trackOddEven=="odd") {
+        trackOddEven="even";
+      } else {
+        trackOddEven="odd";
+      }
+
       var li = document.createElement("li");
       li.setAttribute("id", queue[i].id);
+      li.setAttribute("class", trackOddEven);
+      li.innerHTML = "";
 
       var newTimerElement = document.createElement("div");
       newTimerElement.setAttribute("class", "timeshow");
@@ -37,14 +63,14 @@ function updateTrackList(trackcontainer) {
       newSaveElement.innerHTML = timetracker.t("Save changes");
       */
 
-      li.innerHTML = "<div class=\"id\">"+queue[i].id+"</div>";
+      li.innerHTML += "<div class=\"id\">"+queue[i].id+"</div>";
       li.innerHTML += "<div class=\"timestart\">"+timetracker.getTimestampInSeconds(queue[i].timestart)+"</div>";
       li.innerHTML += "<div class=\"timeend\">"+timetracker.getTimestampInSeconds(queue[i].timeend)+"</div>";
       li.innerHTML += "<div class=\"timediff\">"+timetracker.getTimestampInSeconds(queue[i].timeend-queue[i].timestart)+"</div>";
 
       li.innerHTML += "<textarea onkeyup=\"timetracker.setMessage("+queue[i].id+", this.value);\" class=\"content\">"+queue[i].content+"</textarea>";
       li.innerHTML += "<input type=\"hidden\" name=\"id[]\" value=\""+queue[i].id+"\" />";
-      li.innerHTML += "<input type=\"checkbox\" name=\"checked[]\" value=\""+queue[i].id+"\" />";
+      li.innerHTML += "<input class=\"checkbox\" type=\"checkbox\" name=\"checked[]\" value=\""+queue[i].id+"\" />";
 
       li.appendChild(newStartElement);
       li.appendChild(newStopElement);
@@ -56,6 +82,18 @@ function updateTrackList(trackcontainer) {
 }
 
 window.onload = function() {
+  var theme = "default";
+  if (typeof timetracker.config.theme!="undefined" && timetracker.config.theme!="") {
+    theme = timetracker.config.theme;
+  }
+
+  var themeString = "themes/" + theme + "/" + theme +".css";
+  var newStyleLink = document.createElement("link");
+  newStyleLink.setAttribute("href", themeString);
+  newStyleLink.setAttribute("type", "text/css");
+  newStyleLink.setAttribute("rel", "stylesheet");
+  document.head.appendChild(newStyleLink);
+
   var container = timetracker.getContainer();
 
   var form = document.createElement("form");

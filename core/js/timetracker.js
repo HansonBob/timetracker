@@ -1,6 +1,14 @@
 timetracker.queue = new Array();
 timetracker.timers = {};
 
+if (typeof timetracker.config.language!="undefined" && timetracker.config.language!="") {
+  var langScript = "lang/" + timetracker.config.language + ".js";
+  var newScript = document.createElement("script");
+  newScript.setAttribute("src", langScript);
+  newScript.setAttribute("type", "text/javascript");
+  document.head.appendChild(newScript);
+}
+
 timetracker.createTracker = function() {
   timetracker.getTrackerQueue();
 
@@ -8,7 +16,8 @@ timetracker.createTracker = function() {
     "id" : timetracker.queue.length,
     "timestart" : 0,
     "timeend" : 0,
-    "content" : ""
+    "content" : "",
+    "date"    : timetracker.getCurrentDateFromTimestamp(timetracker.getCurrentTimestamp())
   };
 
   timetracker.queue[newTrack["id"]] = newTrack;
@@ -50,6 +59,7 @@ timetracker.saveTracker = function(id) {
     contentsString = contentsString.replace("%timestart%", contents["timestart"]);
     contentsString = contentsString.replace("%timeend%", contents["timeend"]);
     contentsString = contentsString.replace("%content%", contents["content"]);
+    contentsString = contentsString.replace("%date%", contents["date"]);
 
     localStorage.setItem(
       timetracker.config.saveformatKey+""+id,
@@ -81,7 +91,8 @@ timetracker.getTrackerQueue = function() {
     var timestartIndex = saveformatContent.indexOf("%timestart%");
     var timeendIndex = saveformatContent.indexOf("%timeend%");
     var contentIndex = saveformatContent.indexOf("%content%");
-    var indexesArray = new Array(idIndex, timestartIndex, timeendIndex, contentIndex);
+    var dateIndex = saveformatContent.indexOf("%date%");
+    var indexesArray = new Array(idIndex, timestartIndex, timeendIndex, contentIndex, dateIndex);
     indexesArray.sort(function(a, b) {
       return parseInt(a) - parseInt(b);
     });
@@ -109,6 +120,10 @@ timetracker.getTrackerQueue = function() {
           if (indexesArray[k] === contentIndex) {
             savedEntry["content"] = savedArray[k];
           }
+
+          if (indexesArray[k] === dateIndex) {
+            savedEntry["date"] = savedArray[k];
+          }
         }
 
         timetracker.queue[savedEntry["id"]] = savedEntry;
@@ -135,6 +150,15 @@ timetracker.getCurrentTimestamp = function() {
   timestamp = d.getTime();
 
   return timestamp;
+};
+
+timetracker.getCurrentDateFromTimestamp = function(timestamp) {
+  var datestamp = "";
+  var d = new Date();
+  d.setTime(timestamp);
+  datestamp = d.getDate() + "-" + (d.getMonth()+1) + "-" + d.getFullYear() + " " + days[d.getDay()];
+
+  return datestamp;
 };
 
 timetracker.getTimestampInSeconds = function(timestamp) {
