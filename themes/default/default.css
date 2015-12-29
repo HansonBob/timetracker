@@ -57,11 +57,16 @@ body {
   margin-bottom: 40px;
 }
 
-#tracks textarea {
+#tracks .content {
   font-family: inherit;
   float: left;
   margin-right: 20px;
   padding: 0px;
+}
+
+#tracks .content[data-write='disabled'] {
+  background-color: #ddd;
+  color: #aaa;
 }
 
 #tracks .checkbox, #tracks .start, #tracks .stop {

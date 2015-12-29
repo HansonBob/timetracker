@@ -57,6 +57,26 @@ function updateTrackList(trackcontainer) {
       newStopElement.innerHTML = timetracker.t("Stop");
       newStopElement.setAttribute("title", timetracker.t("Stop"));
 
+      var contentElement = document.createElement("textarea");
+      contentElement.setAttribute("class", "content");
+      contentElement.setAttribute("data-write", "disabled");
+      contentElement.setAttribute("title", timetracker.t("double click to make changes"));
+      contentElement.innerHTML = queue[i].content;
+
+      contentElement.addEventListener("dblclick", function() {
+        if (typeof contentElement.getAttribute("data-write")=="undefined" || contentElement.getAttribute("data-write")!="disabled") {
+          contentElement.setAttribute("data-write", "disabled");
+        } else {
+          contentElement.setAttribute("data-write", "enabled");
+        }
+      }, true);
+
+      contentElement.addEventListener("keyup", function() {
+        if (typeof contentElement.getAttribute("data-write")!="undefined" && contentElement.getAttribute("data-write")=="enabled") {
+          timetracker.setMessage(queue[i].id, contentElement.value);
+        }
+      }, true);
+
       /*
       var newSaveElement = document.createElement("a");
       newSaveElement.setAttribute("class", "save");
@@ -71,10 +91,10 @@ function updateTrackList(trackcontainer) {
       li.innerHTML += "<div class=\"timeend\">"+timetracker.getTimestampInSeconds(queue[i].timeend)+"</div>";
       li.innerHTML += "<div class=\"timediff\">"+timetracker.getTimestampInSeconds(queue[i].timeend-queue[i].timestart)+"</div>";
 
-      li.innerHTML += "<textarea onkeyup=\"timetracker.setMessage("+queue[i].id+", this.value);\" class=\"content\">"+queue[i].content+"</textarea>";
       li.innerHTML += "<input type=\"hidden\" name=\"id[]\" value=\""+queue[i].id+"\" />";
       li.innerHTML += "<input class=\"checkbox\" type=\"checkbox\" name=\"checked[]\" value=\""+queue[i].id+"\" />";
 
+      li.appendChild(contentElement);
       li.appendChild(newStartElement);
       li.appendChild(newStopElement);
       //li.appendChild(newSaveElement);
