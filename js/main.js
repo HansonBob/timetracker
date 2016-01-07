@@ -59,7 +59,13 @@ function updateTrackList(trackcontainer) {
 
       var contentElement = document.createElement("textarea");
       contentElement.setAttribute("class", "content");
-      contentElement.setAttribute("data-write", "disabled");
+      
+      if (queue[i].timestart!=0 && (queue[i].timeend!=0 || queue[i].timeend!=1)) {
+        contentElement.setAttribute("data-write", "disabled");
+      } else {
+        contentElement.setAttribute("data-write", "enabled");
+      }
+
       contentElement.setAttribute("title", timetracker.t("double click to make changes"));
       contentElement.innerHTML = queue[i].content;
 
