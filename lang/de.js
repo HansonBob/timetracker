@@ -5,5 +5,6 @@ var contents = {
   'Stop' : 'Stop',
   'Save changes': 'Änderungen speichern',
   'create': 'Neues Tracking erstellen',
-  'delete': 'ausgewählte Trackings löschen'
+  'delete': 'ausgewählte Trackings löschen',
+  'double click to make changes': 'doppelclick für Änderungen'
 };

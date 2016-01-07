@@ -16,6 +16,8 @@ body {
 
 .date-separator {
   border: 1px solid #000;
+  border-left: 0px;
+  border-right: 0px;
 }
 
 .date-separator.even {
@@ -49,19 +51,23 @@ body {
 }
 
 #tracks li:hover:not(.date-separator) {
-  background-color: #000;
-  color: #fff;
+  opacity: 0.7;
 }
 
 #tracks li:last-child {
   margin-bottom: 40px;
 }
 
-#tracks textarea {
+#tracks .content {
   font-family: inherit;
   float: left;
   margin-right: 20px;
   padding: 0px;
+}
+
+#tracks .content[data-write='disabled'] {
+  background-color: #ddd;
+  color: #444;
 }
 
 #tracks .checkbox, #tracks .start, #tracks .stop {
