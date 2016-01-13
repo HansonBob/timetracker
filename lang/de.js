@@ -1,4 +1,4 @@
-var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+var days = ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
 
 var contents = {
   'Start' : 'Start',
