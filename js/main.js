@@ -2,18 +2,28 @@ function updateTrackList(trackcontainer) {
   trackcontainer.innerHTML = "";
   timetracker.getTrackerQueue();
   var queue = timetracker.queue;
-  var dateSeparator = "";
+  var dateSeparator, dataStatusBar = "";
   var dateOddEven = "even";
   var trackOddEven = "odd";
   
   for (var i in queue) {
     (function(i) {
       if (dateSeparator!=queue[i].date && typeof queue[i].date!="undefined") {
+        if (typeof queue[(i-1)]!="undefined") {
+          var cleanedDateString = queue[(i-1)].date.toLowerCase();
+          cleanedDateString = cleanedDateString.replace(/[^a-z0-9\-\_]/g, "-");       
+
+          var newStatusBar = document.createElement("li");
+          newStatusBar.setAttribute("class", "statusbar");
+          newStatusBar.setAttribute("id", "statusbar-"+cleanedDateString);
+          trackcontainer.appendChild(newStatusBar); 
+        }
+
         dateSeparator = queue[i].date;
 
         var liSep = document.createElement("li");
         liSep.setAttribute("class", "date-separator "+dateOddEven);
-        liSep.innerHTML = queue[i].date;
+        liSep.innerHTML = timetracker.getDateFromDays(queue[i].date);
         trackcontainer.appendChild(liSep);
 
         if (dateOddEven=="odd") {
@@ -108,6 +118,18 @@ function updateTrackList(trackcontainer) {
       trackcontainer.appendChild(li);
     }(i));
   }
+
+  var lastEntry = (queue.length-1);
+
+  if (typeof queue[lastEntry]!="undefined") {
+    var cleanedDateString = queue[lastEntry].date.toLowerCase();
+    cleanedDateString = cleanedDateString.replace(/[^a-z0-9\-\_]/g, "-");       
+
+    var newStatusBar = document.createElement("li");
+    newStatusBar.setAttribute("class", "statusbar");
+    newStatusBar.setAttribute("id", "statusbar-"+cleanedDateString);
+    trackcontainer.appendChild(newStatusBar); 
+  }
 }
 
 window.onload = function() {
@@ -164,4 +186,42 @@ window.onload = function() {
 
     updateTrackList(tracks);
   }, true);
+
+  var allInputs = document.getElementsByTagName("input");
+  var allDates = new Array();
+  for(var i=0; i<allInputs.length; i++) {
+    if (typeof allInputs[i].getAttribute("class")!="undefined" && allInputs[i].getAttribute("class")=="checkbox") {
+
+      allInputs[i].addEventListener("change" , function(e){
+        //var localStorageIdKey = timetracker.config.saveformatKey;
+        //var storagedEntry = localStorage.getItem(localStorageIdKey+allInputs[i].value);
+        var savedEntry = timetracker.getTrackerContent(this.value);
+
+        if (typeof allDates[savedEntry.date]=="undefined" || allDates[savedEntry.date]==null) {
+          allDates[savedEntry.date] = 0;
+        }
+
+        if (typeof allDates[savedEntry.date]!="undefined" && allDates[savedEntry.date]!=null) {
+          if (timetracker.getTimestampDifference(this.value)!=null) {
+            if (this.checked==true) {
+              allDates[savedEntry.date] = allDates[savedEntry.date] + timetracker.getTimestampDifference(this.value);
+            } else {
+              allDates[savedEntry.date] = allDates[savedEntry.date] - timetracker.getTimestampDifference(this.value);
+            }
+
+            var cleanedDateString = savedEntry.date.toLowerCase();
+            cleanedDateString = cleanedDateString.replace(/[^a-z0-9\-\_]/g, "-"); 
+
+            if (typeof document.getElementById("statusbar-"+cleanedDateString)!="undefined") {
+              document.getElementById("statusbar-"+cleanedDateString).innerHTML = timetracker.getTimeFromMilliseconds(allDates[savedEntry.date]);
+
+              if (document.getElementById("statusbar-"+cleanedDateString).innerHTML=="0") {
+                document.getElementById("statusbar-"+cleanedDateString).innerHTML = "";
+              }
+            }
+          }
+        }
+      }, true);
+    }
+  }
 };

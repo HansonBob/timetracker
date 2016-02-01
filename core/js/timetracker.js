@@ -17,7 +17,7 @@ timetracker.createTracker = function() {
     "timestart" : 0,
     "timeend" : 0,
     "content" : "",
-    "date"    : timetracker.getCurrentDateFromTimestamp(timetracker.getCurrentTimestamp())
+    "date"    : timetracker.getTimestampInDays(timetracker.getCurrentTimestamp())
   };
 
   timetracker.queue[newTrack["id"]] = newTrack;
@@ -163,7 +163,21 @@ timetracker.getCurrentDateFromTimestamp = function(timestamp) {
   var datestamp = "";
   var d = new Date();
   d.setTime(timestamp);
-  datestamp = d.getDate() + "-" + (d.getMonth()+1) + "-" + d.getFullYear() + " " + days[d.getDay()];
+
+  var dayDate = d.getDate();
+  if (dayDate < 10) {
+    dayDate = "0"+dayDate;
+  }
+
+  var monthDate = (d.getMonth()+1);
+  if (monthDate < 10) {
+    monthDate = "0"+monthDate;
+  }
+
+  var yearDate = d.getFullYear();
+  var dayName = days[d.getDay()];
+
+  datestamp = dayDate + "." + monthDate + "." + yearDate + " " + dayName;
 
   return datestamp;
 };
@@ -234,4 +248,23 @@ timetracker.getTimeFromMilliseconds = function(milliseconds) {
   }
   
   return hours+':'+minutes+':'+seconds;
+};
+
+timetracker.getTimestampInDays = function(timestamp) {
+  if (typeof timestamp!=="undefined") {
+    return Math.floor(timestamp/1000/(24*60*60));
+  }
+}
+
+timetracker.getDateFromDays = function(days) {
+  if (typeof days!=="undefined") {
+    var timestamp = days*1000*(24*60*60);
+    return timetracker.getCurrentDateFromTimestamp(timestamp);
+  }
+}
+
+timetracker.getTimestampDifference = function(id) {
+  if (timetracker.queue[id].timeend!=0 && timetracker.queue[id].timeend!=1 && timetracker.queue[id].timestart!=0) {
+    return timetracker.queue[id].timeend-timetracker.queue[id].timestart;   
+  }
 };
