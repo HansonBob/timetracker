@@ -147,16 +147,45 @@ window.onload = function() {
 
   var container = timetracker.getContainer();
 
+  var dateView = document.createElement("form");
+  dateView.setAttribute("class", "menu");
+
   var form = document.createElement("form");
   form.setAttribute("id", "formTimetracks");
-  container.appendChild(form);
 
   var tracks = document.createElement("ul");
   tracks.setAttribute("id", "tracks");
+
   form.appendChild(tracks);
 
-  
+  var dateViewFrom = document.createElement("input");
+  if (timetracker.getOption("dateFrom")!=null) {
+    dateViewFrom.value = timetracker.getOption("dateFrom")[1];
+  }
+
+  var dateViewTo = document.createElement("input");
+  if (timetracker.getOption("dateTo")!=null) {
+    dateViewTo.value = timetracker.getOption("dateTo")[1];
+  }
+
+  dateView.appendChild(dateViewFrom);
+  dateView.appendChild(dateViewTo);
+  container.appendChild(dateView);
+  container.appendChild(form);
+
   updateTrackList(tracks);
+
+  dateViewFrom.addEventListener("keyup", function(){
+    timetracker.setOption("dateFrom", dateViewFrom.value);
+console.log(dateViewFrom.getAttribute("value") + ";" + dateViewFrom.value);
+    updateTrackList(tracks);
+  }, true);
+
+  dateViewTo.addEventListener("keyup", function(){
+    timetracker.setOption("dateTo", dateViewTo.value);
+console.log(dateViewTo.getAttribute("value"));
+    updateTrackList(tracks);
+  }, true);
 
   var newMenu = document.createElement("ul");
   newMenu.innerHTML = newMenu.innerHTML + "<li title=\"" + timetracker.t("create") + "\" id=\"create\">" + timetracker.t("create") + "</li>";

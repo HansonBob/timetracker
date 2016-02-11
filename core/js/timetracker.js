@@ -104,10 +104,34 @@ timetracker.getTrackerQueue = function() {
       return parseInt(a) - parseInt(b);
     });
 
-    for (var i in localStorage) {
-      var checkSavedKey = i.indexOf(timetracker.config.saveformatKey);
+    var optionsKey = timetracker.config.optionsKey;
 
-      if (checkSavedKey!=-1) {
+    var dateFrom=null;
+    if (timetracker.getOption("dateFrom")!=null) {
+      dateFrom = timetracker.getOption("dateFrom")[1];
+    }
+
+    var dateTo = null;
+    if (timetracker.getOption("dateTo")!=null) {
+      dateTo = timetracker.getOption("dateTo")[1];
+    }
+
+    for (var i in localStorage) {
+      var escapedSaveFormat = escapeRegExp(timetracker.config.saveformatKey);
+      var checkRegex = new RegExp(escapedSaveFormat+"\\d+", "g");
+      var checkSavedKey = i.match(checkRegex);
+      var showFrom = false;
+      var showTo = false;
+
+      if (dateFrom==null || dateFrom=="") {
+        showFrom = true;
+      }
+
+      if (dateTo==null || dateTo=="") {
+        showTo = true;
+      }
+
+      if (checkSavedKey!=null) {
         var savedArray = localStorage[i].split(";");
         var savedEntry = {};
 
@@ -133,7 +157,17 @@ timetracker.getTrackerQueue = function() {
           }
         }
 
-        timetracker.queue[savedEntry["id"]] = savedEntry;
+        if (dateFrom!=null && (savedEntry["timestart"]>=dateFrom || savedEntry["timeend"]>=dateFrom)) {
+          showFrom = true;
+        }
+
+        if (dateTo!=null && (savedEntry["timestart"]<=dateTo || savedEntry["timeend"]<=dateTo)) {
+          showTo = true;
+        }
+
+        if (showFrom==true && showTo==true) {
+          timetracker.queue[savedEntry["id"]] = savedEntry;
+        }
       }
     }
   }
@@ -268,3 +302,61 @@ timetracker.getTimestampDifference = function(id) {
     return timetracker.queue[id].timeend-timetracker.queue[id].timestart;   
   }
 };
+
+timetracker.setOption = function(oKey, oValue) {
+  var optionsKey = timetracker.config.optionsKey;
+
+  if (timetracker.config.savetype === "localStorage") {
+    var oldOptions = localStorage.getItem(optionsKey);
+
+    if (oldOptions!=null && oldOptions!="") {
+      var oldOptionsArray = oldOptions.split(";");
+      var currentOption = new Array();
+      var isInOptions = false;
+
+      for (var i=0; i<oldOptionsArray.length; i++) {
+        currentOption = oldOptionsArray[i].split(",");
+
+        if (currentOption[0]==oKey) {
+          isInOptions = true;
+          oldOptionsArray[i] = oKey+","+oValue;
+        }
+      }
+
+      if (isInOptions==false) {
+        localStorage.setItem(optionsKey, oldOptions+";"+oKey+","+oValue);
+      } else {
+        localStorage.setItem(optionsKey, oldOptionsArray.join(";"));
+      }
+    } else {
+      localStorage.setItem(optionsKey, oKey+","+oValue);
+    }
+  }
+};
+
+timetracker.getOption = function(oKey) {
+  var optionsKey = timetracker.config.optionsKey;
+
+  if (timetracker.config.savetype === "localStorage") {
+    var oldOptions = localStorage.getItem(optionsKey);
+
+    if (oldOptions!=null && oldOptions!="") {
+      var oldOptionsArray = oldOptions.split(";");
+      var currentOption = new Array();
+
+      for (var i=0; i<oldOptionsArray.length; i++) {
+        currentOption = oldOptionsArray[i].split(",");
+
+        if (currentOption[0]==oKey) {
+          return currentOption;
+        }
+      }
+    }
+
+    return null;
+  }
+}
+
+function escapeRegExp(str) {
+  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+}
