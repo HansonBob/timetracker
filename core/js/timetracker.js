@@ -169,7 +169,6 @@ timetracker.getTrackerQueue = function() {
           timetracker.queue[savedEntry["id"]] = savedEntry;
         } else {
           timetracker.queue[savedEntry["id"]] = null;
-          delete(timetracker.queue[savedEntry["id"]]);
         }
       }
     }
@@ -249,6 +248,7 @@ timetracker.setMessage = function(id, message) {
 
 timetracker.showTimer = function(id, element, callbackelement) {
   if (typeof timetracker.queue[id]!="undefined"
+    && timetracker.queue[id]!=null
     && typeof timetracker.queue[id].timeend!="undefined"
     && (
       timetracker.queue[id].timeend==1
