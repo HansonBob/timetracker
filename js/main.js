@@ -177,13 +177,11 @@ window.onload = function() {
 
   dateViewFrom.addEventListener("keyup", function(){
     timetracker.setOption("dateFrom", dateViewFrom.value);
-console.log(dateViewFrom.getAttribute("value") + ";" + dateViewFrom.value);
     updateTrackList(tracks);
   }, true);
 
   dateViewTo.addEventListener("keyup", function(){
     timetracker.setOption("dateTo", dateViewTo.value);
-console.log(dateViewTo.getAttribute("value"));
     updateTrackList(tracks);
   }, true);
 

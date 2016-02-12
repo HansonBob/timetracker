@@ -157,16 +157,19 @@ timetracker.getTrackerQueue = function() {
           }
         }
 
-        if (dateFrom!=null && (savedEntry["timestart"]>=dateFrom || savedEntry["timeend"]>=dateFrom)) {
+        if (dateFrom!=null && savedEntry["date"]>=dateFrom) {
           showFrom = true;
         }
 
-        if (dateTo!=null && (savedEntry["timestart"]<=dateTo || savedEntry["timeend"]<=dateTo)) {
+        if (dateTo!=null && savedEntry["date"]<=dateTo) {
           showTo = true;
         }
 
         if (showFrom==true && showTo==true) {
           timetracker.queue[savedEntry["id"]] = savedEntry;
+        } else {
+          timetracker.queue[savedEntry["id"]] = null;
+          delete(timetracker.queue[savedEntry["id"]]);
         }
       }
     }
@@ -245,7 +248,13 @@ timetracker.setMessage = function(id, message) {
 };
 
 timetracker.showTimer = function(id, element, callbackelement) {
-  if (timetracker.queue[id].timeend==1 || (timetracker.queue[id].timeend==0 && timetracker.queue[id].timestart!=0)) {
+  if (typeof timetracker.queue[id]!="undefined"
+    && typeof timetracker.queue[id].timeend!="undefined"
+    && (
+      timetracker.queue[id].timeend==1
+      || (timetracker.queue[id].timeend==0 && timetracker.queue[id].timestart!=0)
+    )
+  ) {
     var currentDiff = timetracker.getCurrentTimestamp()-timetracker.queue[id].timestart;
     var formattedTime = timetracker.getTimeFromMilliseconds(currentDiff);
     
