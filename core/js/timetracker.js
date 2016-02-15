@@ -299,6 +299,12 @@ timetracker.getTimestampInDays = function(timestamp) {
   }
 }
 
+timetracker.getDaysInTimestamp = function(days) {
+  if (typeof days!=="undefined") {
+    return Math.floor(days*1000*(24*60*60));
+  }
+}
+
 timetracker.getDateFromDays = function(days) {
   if (typeof days!=="undefined") {
     var timestamp = days*1000*(24*60*60);

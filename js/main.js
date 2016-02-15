@@ -17,7 +17,7 @@ function updateTrackList(trackcontainer) {
             var newStatusBar = document.createElement("li");
             newStatusBar.setAttribute("class", "statusbar");
             newStatusBar.setAttribute("id", "statusbar-"+cleanedDateString);
-            trackcontainer.appendChild(newStatusBar); 
+            trackcontainer.appendChild(newStatusBar);
           }
 
           dateSeparator = queue[i].date;
@@ -147,6 +147,13 @@ window.onload = function() {
   newStyleLink.setAttribute("rel", "stylesheet");
   document.head.appendChild(newStyleLink);
 
+  themeString = "themes/" + theme + "/" + theme +"-datepicker.css";
+  newStyleLink = document.createElement("link");
+  newStyleLink.setAttribute("href", themeString);
+  newStyleLink.setAttribute("type", "text/css");
+  newStyleLink.setAttribute("rel", "stylesheet");
+  document.head.appendChild(newStyleLink);
+
   var container = timetracker.getContainer();
 
   var dateView = document.createElement("form");
@@ -175,6 +182,28 @@ window.onload = function() {
   container.appendChild(dateView);
   container.appendChild(form);
 
+  var datepickerFrom = new Datepicker(
+    dateViewFrom,
+    timetracker.getDaysInTimestamp( timetracker.getOption("dateFrom")[1] ),
+    function(e) {
+      dateViewFrom.value = e.getAttribute("data-days");
+      datepickerFrom.hide();
+      timetracker.setOption("dateFrom", dateViewFrom.value);
+      updateTrackList(tracks);
+    }
+  );
+
+  var datepickerTo = new Datepicker(
+    dateViewTo,
+    timetracker.getDaysInTimestamp( timetracker.getOption("dateTo")[1] ),
+    function(e) {
+      dateViewTo.value = e.getAttribute("data-days");
+      datepickerFrom.hide();
+      timetracker.setOption("dateTo", dateViewTo.value);
+      updateTrackList(tracks);
+    }
+  );
+
   updateTrackList(tracks);
 
   dateViewFrom.addEventListener("keyup", function(){
@@ -182,9 +211,21 @@ window.onload = function() {
     updateTrackList(tracks);
   }, true);
 
+  dateViewFrom.addEventListener("focus", function(){
+    datepickerFrom.show();
+  }, true);
+
+  dateViewFrom.addEventListener("blur", function(){
+    //datepickerFrom.hide();
+  }, true);
+
   dateViewTo.addEventListener("keyup", function(){
     timetracker.setOption("dateTo", dateViewTo.value);
     updateTrackList(tracks);
+  }, true);
+
+  dateViewTo.addEventListener("focus", function(){
+    datepickerFrom.show();
   }, true);
 
   var newMenu = document.createElement("ul");
