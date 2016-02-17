@@ -17,7 +17,7 @@ function updateTrackList(trackcontainer) {
             var newStatusBar = document.createElement("li");
             newStatusBar.setAttribute("class", "statusbar");
             newStatusBar.setAttribute("id", "statusbar-"+cleanedDateString);
-            trackcontainer.appendChild(newStatusBar); 
+            trackcontainer.appendChild(newStatusBar);
           }
 
           dateSeparator = queue[i].date;
@@ -147,6 +147,13 @@ window.onload = function() {
   newStyleLink.setAttribute("rel", "stylesheet");
   document.head.appendChild(newStyleLink);
 
+  themeString = "themes/" + theme + "/" + theme +"-datepicker.css";
+  newStyleLink = document.createElement("link");
+  newStyleLink.setAttribute("href", themeString);
+  newStyleLink.setAttribute("type", "text/css");
+  newStyleLink.setAttribute("rel", "stylesheet");
+  document.head.appendChild(newStyleLink);
+
   var container = timetracker.getContainer();
 
   var dateView = document.createElement("form");
@@ -162,12 +169,14 @@ window.onload = function() {
 
   var dateViewFrom = document.createElement("input");
   if (timetracker.getOption("dateFrom")!=null) {
-    dateViewFrom.value = timetracker.getOption("dateFrom")[1];
+    dateViewFrom.setAttribute("value", timetracker.getOption("dateFrom")[1]);
+    dateViewFrom.value = timetracker.getDateFromDays( timetracker.getOption("dateFrom")[1] );
   }
 
   var dateViewTo = document.createElement("input");
   if (timetracker.getOption("dateTo")!=null) {
-    dateViewTo.value = timetracker.getOption("dateTo")[1];
+    dateViewTo.setAttribute("value", timetracker.getOption("dateTo")[1]);
+    dateViewTo.value = timetracker.getDateFromDays( timetracker.getOption("dateTo")[1] );
   }
 
   dateView.appendChild(dateViewFrom);
@@ -175,16 +184,48 @@ window.onload = function() {
   container.appendChild(dateView);
   container.appendChild(form);
 
+  var datepickerFrom = new Datepicker(
+    dateViewFrom,
+    timetracker.getDaysInTimestamp( timetracker.getOption("dateFrom")[1] ),
+    function(e) {
+      dateViewFrom.setAttribute("value", e.getAttribute("data-days") );
+      dateViewFrom.value = timetracker.getDateFromDays( e.getAttribute("data-days") );
+      datepickerFrom.hide();
+      timetracker.setOption("dateFrom", dateViewFrom.getAttribute("value"));
+      updateTrackList(tracks);
+    }
+  );
+
+  var datepickerTo = new Datepicker(
+    dateViewTo,
+    timetracker.getDaysInTimestamp( timetracker.getOption("dateTo")[1] ),
+    function(e) {
+      dateViewTo.setAttribute("value", e.getAttribute("data-days") );
+      dateViewTo.value = timetracker.getDateFromDays( e.getAttribute("data-days") );
+      datepickerTo.hide();
+      timetracker.setOption("dateTo", dateViewTo.getAttribute("value"));
+      updateTrackList(tracks);
+    }
+  );
+
   updateTrackList(tracks);
 
   dateViewFrom.addEventListener("keyup", function(){
-    timetracker.setOption("dateFrom", dateViewFrom.value);
+    timetracker.setOption("dateFrom", dateViewFrom.getAttribute("value"));
     updateTrackList(tracks);
   }, true);
 
+  dateViewFrom.addEventListener("focus", function(e){
+    datepickerFrom.show(e);
+  }, true);
+
   dateViewTo.addEventListener("keyup", function(){
-    timetracker.setOption("dateTo", dateViewTo.value);
+    timetracker.setOption("dateTo", dateViewTo.getAttribute("value"));
     updateTrackList(tracks);
+  }, true);
+
+  dateViewTo.addEventListener("focus", function(e){
+    datepickerTo.show(e);
   }, true);
 
   var newMenu = document.createElement("ul");

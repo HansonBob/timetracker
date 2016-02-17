@@ -232,7 +232,6 @@ timetracker.getContainer = function() {
 
 timetracker.t = function(a, b) {
   var b = b || new Array();
-  var timetrackerLang = timetracker.config.language;
 
   if (typeof contents[a]!="undefined") {
     return contents[a];
@@ -296,6 +295,12 @@ timetracker.getTimeFromMilliseconds = function(milliseconds) {
 timetracker.getTimestampInDays = function(timestamp) {
   if (typeof timestamp!=="undefined") {
     return Math.floor(timestamp/1000/(24*60*60));
+  }
+}
+
+timetracker.getDaysInTimestamp = function(days) {
+  if (typeof days!=="undefined") {
+    return Math.floor(days*1000*(24*60*60));
   }
 }
 
