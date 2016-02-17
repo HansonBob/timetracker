@@ -169,12 +169,14 @@ window.onload = function() {
 
   var dateViewFrom = document.createElement("input");
   if (timetracker.getOption("dateFrom")!=null) {
-    dateViewFrom.value = timetracker.getOption("dateFrom")[1];
+    dateViewFrom.setAttribute("value", timetracker.getOption("dateFrom")[1]);
+    dateViewFrom.value = timetracker.getDateFromDays( timetracker.getOption("dateFrom")[1] );
   }
 
   var dateViewTo = document.createElement("input");
   if (timetracker.getOption("dateTo")!=null) {
-    dateViewTo.value = timetracker.getOption("dateTo")[1];
+    dateViewTo.setAttribute("value", timetracker.getOption("dateTo")[1]);
+    dateViewTo.value = timetracker.getDateFromDays( timetracker.getOption("dateTo")[1] );
   }
 
   dateView.appendChild(dateViewFrom);
@@ -186,9 +188,10 @@ window.onload = function() {
     dateViewFrom,
     timetracker.getDaysInTimestamp( timetracker.getOption("dateFrom")[1] ),
     function(e) {
-      dateViewFrom.value = e.getAttribute("data-days");
+      dateViewFrom.setAttribute("value", e.getAttribute("data-days") );
+      dateViewFrom.value = timetracker.getDateFromDays( e.getAttribute("data-days") );
       datepickerFrom.hide();
-      timetracker.setOption("dateFrom", dateViewFrom.value);
+      timetracker.setOption("dateFrom", dateViewFrom.getAttribute("value"));
       updateTrackList(tracks);
     }
   );
@@ -197,9 +200,10 @@ window.onload = function() {
     dateViewTo,
     timetracker.getDaysInTimestamp( timetracker.getOption("dateTo")[1] ),
     function(e) {
-      dateViewTo.value = e.getAttribute("data-days");
-      datepickerFrom.hide();
-      timetracker.setOption("dateTo", dateViewTo.value);
+      dateViewTo.setAttribute("value", e.getAttribute("data-days") );
+      dateViewTo.value = timetracker.getDateFromDays( e.getAttribute("data-days") );
+      datepickerTo.hide();
+      timetracker.setOption("dateTo", dateViewTo.getAttribute("value"));
       updateTrackList(tracks);
     }
   );
@@ -207,25 +211,21 @@ window.onload = function() {
   updateTrackList(tracks);
 
   dateViewFrom.addEventListener("keyup", function(){
-    timetracker.setOption("dateFrom", dateViewFrom.value);
+    timetracker.setOption("dateFrom", dateViewFrom.getAttribute("value"));
     updateTrackList(tracks);
   }, true);
 
-  dateViewFrom.addEventListener("focus", function(){
-    datepickerFrom.show();
-  }, true);
-
-  dateViewFrom.addEventListener("blur", function(){
-    //datepickerFrom.hide();
+  dateViewFrom.addEventListener("focus", function(e){
+    datepickerFrom.show(e);
   }, true);
 
   dateViewTo.addEventListener("keyup", function(){
-    timetracker.setOption("dateTo", dateViewTo.value);
+    timetracker.setOption("dateTo", dateViewTo.getAttribute("value"));
     updateTrackList(tracks);
   }, true);
 
-  dateViewTo.addEventListener("focus", function(){
-    datepickerFrom.show();
+  dateViewTo.addEventListener("focus", function(e){
+    datepickerTo.show(e);
   }, true);
 
   var newMenu = document.createElement("ul");

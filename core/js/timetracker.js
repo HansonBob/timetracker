@@ -232,7 +232,6 @@ timetracker.getContainer = function() {
 
 timetracker.t = function(a, b) {
   var b = b || new Array();
-  var timetrackerLang = timetracker.config.language;
 
   if (typeof contents[a]!="undefined") {
     return contents[a];
