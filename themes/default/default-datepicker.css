@@ -1,0 +1,67 @@
+.datepicker-overlay {
+  display: none;
+  height: 100%;
+  left: 0px;
+  position: absolute;
+  top: 0px;
+  width: 100%;
+}
+
+.datepicker-overlay.show {
+  display: block;
+}
+
+.datepicker {
+  background-color: #fff;
+  border: 1px solid #555;
+  display: none;
+  position: absolute;
+}
+
+.datepicker.show {
+  display: block;
+}
+
+.datepicker:after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.datepicker .day {
+  cursor: pointer;
+  display: block;
+  float:left;
+  height: 20px;
+  padding: 2px;
+  width: 20px;
+}
+
+.datepicker .next-row {
+  clear: both;
+}
+
+.datepicker .active {
+  background-color: #555;
+  color: #fff;
+}
+
+.datepicker .date-switch {
+
+}
+
+.datepicker .date-switch .date-prev, .datepicker .date-switch .date-next {
+  cursor: pointer;
+  display: inline-block;
+  width: 50%;
+}
+
+.datepicker .days {
+
+}
+
+.datepicker .days:after {
+  clear: both;
+  content: "";
+  display: table;
+}

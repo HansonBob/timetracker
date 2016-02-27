@@ -17,14 +17,14 @@ timetracker.createTracker = function() {
     "timestart" : 0,
     "timeend" : 0,
     "content" : "",
-    "date"    : timetracker.getCurrentDateFromTimestamp(timetracker.getCurrentTimestamp())
+    "date"    : timetracker.getTimestampInDays(timetracker.getCurrentTimestamp())
   };
 
   timetracker.queue[newTrack["id"]] = newTrack;
   timetracker.saveTracker(newTrack["id"]);
 };
 
-timetracker.startTracker = function(id, element, callbackelement) {
+timetracker.startTracker = function(id, element, callbackelements) {
   if (timetracker.queue[id].timeend!=1) {
     if (timetracker.queue[id].timestart!=0 && timetracker.queue[id].timeend!=0) {
       timetracker.queue[id].timestart = timetracker.getCurrentTimestamp()-(timetracker.queue[id].timeend-timetracker.queue[id].timestart);
@@ -34,7 +34,7 @@ timetracker.startTracker = function(id, element, callbackelement) {
 
     timetracker.queue[id].timeend = 1;
     if (typeof element!="undefined") {
-      timetracker.showTimer(id, element, callbackelement);
+      timetracker.showTimer(id, element, callbackelements);
     }
 
     timetracker.saveTracker(id);
@@ -47,7 +47,7 @@ timetracker.stopTracker = function(id, element) {
     timetracker.saveTracker(id);
 
     if (typeof element!="undefined") {
-      element.setAttribute("data-started", "");
+      element.setAttribute("data-active", "false");
     }
 
     if (typeof timetracker.timers[id]!=="undefined") {
@@ -104,10 +104,34 @@ timetracker.getTrackerQueue = function() {
       return parseInt(a) - parseInt(b);
     });
 
-    for (var i in localStorage) {
-      var checkSavedKey = i.indexOf(timetracker.config.saveformatKey);
+    var optionsKey = timetracker.config.optionsKey;
 
-      if (checkSavedKey!=-1) {
+    var dateFrom=null;
+    if (timetracker.getOption("dateFrom")!=null) {
+      dateFrom = timetracker.getOption("dateFrom")[1];
+    }
+
+    var dateTo = null;
+    if (timetracker.getOption("dateTo")!=null) {
+      dateTo = timetracker.getOption("dateTo")[1];
+    }
+
+    for (var i in localStorage) {
+      var escapedSaveFormat = escapeRegExp(timetracker.config.saveformatKey);
+      var checkRegex = new RegExp(escapedSaveFormat+"\\d+", "g");
+      var checkSavedKey = i.match(checkRegex);
+      var showFrom = false;
+      var showTo = false;
+
+      if (dateFrom==null || dateFrom=="") {
+        showFrom = true;
+      }
+
+      if (dateTo==null || dateTo=="") {
+        showTo = true;
+      }
+
+      if (checkSavedKey!=null) {
         var savedArray = localStorage[i].split(";");
         var savedEntry = {};
 
@@ -133,14 +157,43 @@ timetracker.getTrackerQueue = function() {
           }
         }
 
-        timetracker.queue[savedEntry["id"]] = savedEntry;
+        if (dateFrom!=null && savedEntry["date"]>=dateFrom) {
+          showFrom = true;
+        }
+
+        if (dateTo!=null && savedEntry["date"]<=dateTo) {
+          showTo = true;
+        }
+
+        if (showFrom==true && showTo==true) {
+          timetracker.queue[savedEntry["id"]] = savedEntry;
+        } else {
+          timetracker.queue[savedEntry["id"]] = null;
+        }
       }
     }
   }
 };
 
-timetracker.removeTrackerContent = function(id) {
+timetracker.removeAllTrackerContent = function() {
+  if (window.confirm(timetracker.t("Are you sure?"))==true) {
+    if (typeof timetracker.queue!="undefined") {
+      for (var i in timetracker.queue) {
+        if (typeof timetracker.queue[i]!="undefined" && timetracker.queue[i]!=null) {
+          if (timetracker.config.savetype === "localStorage") {
+            localStorage.removeItem(timetracker.config.saveformatKey+""+timetracker.queue[i].id);
+          }
+        }
+      }
 
+      timetracker.queue = null;
+      delete(timetracker.queue);
+    }
+
+    if (timetracker.config.savetype === "localStorage") {
+      localStorage.removeItem("timetracker_options");
+    }
+  }
 };
 
 timetracker.getTrackerContent = function(id) {
@@ -159,11 +212,31 @@ timetracker.getCurrentTimestamp = function() {
   return timestamp;
 };
 
-timetracker.getCurrentDateFromTimestamp = function(timestamp) {
+timetracker.getCurrentDateFromTimestamp = function(timestamp, showComplete) {
   var datestamp = "";
   var d = new Date();
   d.setTime(timestamp);
-  datestamp = d.getDate() + "-" + (d.getMonth()+1) + "-" + d.getFullYear() + " " + days[d.getDay()];
+
+  var dayDate = d.getDate();
+  if (dayDate < 10) {
+    dayDate = "0"+dayDate;
+  }
+
+  var monthDate = (d.getMonth()+1);
+  if (monthDate < 10) {
+    monthDate = "0"+monthDate;
+  }
+
+  var yearDate = d.getFullYear();
+  var dayName = days[d.getDay()];
+
+  datestamp = dayDate + "." + monthDate + "." + yearDate;
+
+  if (showComplete==true) {
+    datestamp = dayDate + "." + monthDate + "." + yearDate + " " + dayName;
+  } else {
+    datestamp = dayDate + "." + monthDate + "." + yearDate;
+  }
 
   return datestamp;
 };
@@ -182,7 +255,6 @@ timetracker.getContainer = function() {
 
 timetracker.t = function(a, b) {
   var b = b || new Array();
-  var timetrackerLang = timetracker.config.language;
 
   if (typeof contents[a]!="undefined") {
     return contents[a];
@@ -196,19 +268,34 @@ timetracker.setMessage = function(id, message) {
   timetracker.saveTracker(id);
 };
 
-timetracker.showTimer = function(id, element, callbackelement) {
-  if (timetracker.queue[id].timeend==1 || (timetracker.queue[id].timeend==0 && timetracker.queue[id].timestart!=0)) {
+timetracker.showTimer = function(id, element, callbackelements) {
+  if (typeof timetracker.queue[id]!="undefined"
+    && timetracker.queue[id]!=null
+    && typeof timetracker.queue[id].timeend!="undefined"
+    && (
+      timetracker.queue[id].timeend==1
+      || (timetracker.queue[id].timeend==0 && timetracker.queue[id].timestart!=0)
+    )
+  ) {
     var currentDiff = timetracker.getCurrentTimestamp()-timetracker.queue[id].timestart;
     var formattedTime = timetracker.getTimeFromMilliseconds(currentDiff);
     
     element.innerHTML = formattedTime;
+    
+    if (typeof callbackelements!="undefined") {
+      for (var i in callbackelements) {
+        if (i=="inactive") {
+          callbackelements[i].setAttribute("data-active", "false");
+        }
 
-    if (typeof callbackelement!="undefined") {
-      callbackelement.setAttribute("data-started", "started");
+        if (i=="active") {
+          callbackelements[i].setAttribute("data-active", "true");
+        }
+      }
     }
 
     timetracker.timers[id] = window.setTimeout(function(){
-      timetracker.showTimer(id, element, callbackelement);
+      timetracker.showTimer(id, element, callbackelements);
     }, 1000);
   }
 };
@@ -235,3 +322,109 @@ timetracker.getTimeFromMilliseconds = function(milliseconds) {
   
   return hours+':'+minutes+':'+seconds;
 };
+
+timetracker.getTimestampInDays = function(timestamp) {
+  if (typeof timestamp!=="undefined") {
+    return Math.floor(timestamp/1000/(24*60*60));
+  }
+}
+
+timetracker.getDaysInTimestamp = function(days) {
+  if (days!=null || typeof days!=="undefined") {
+    return Math.floor(days*1000*(24*60*60));
+  }
+}
+
+timetracker.getTimestampFromDate = function(date) {
+  if (typeof date!=="undefined") {
+    var dateCheck = date.match(/^(\d+)\.(\d+)\.(\d{4})$/);
+    if (dateCheck!=null) {
+      var newDate = new Date();
+      newDate.setFullYear(dateCheck[3]);
+      newDate.setMonth( (dateCheck[2]-1) );
+      newDate.setDate(dateCheck[1]);
+
+      return newDate.getTime();
+    }
+
+    return dateCheck;
+  }
+}
+
+timetracker.getDateFromDays = function(days) {
+  if (typeof days!=="undefined") {
+    var timestamp = days*1000*(24*60*60);
+    return timetracker.getCurrentDateFromTimestamp(timestamp);
+  }
+}
+
+timetracker.getCompleteDateFromDays = function(days) {
+  if (typeof days!=="undefined") {
+    var timestamp = days*1000*(24*60*60);
+    return timetracker.getCurrentDateFromTimestamp(timestamp, true);
+  }
+}
+
+timetracker.getTimestampDifference = function(id) {
+  if (timetracker.queue[id].timeend!=0 && timetracker.queue[id].timeend!=1 && timetracker.queue[id].timestart!=0) {
+    return timetracker.queue[id].timeend-timetracker.queue[id].timestart;   
+  }
+};
+
+timetracker.setOption = function(oKey, oValue) {
+  var optionsKey = timetracker.config.optionsKey;
+
+  if (timetracker.config.savetype === "localStorage") {
+    var oldOptions = localStorage.getItem(optionsKey);
+
+    if (oldOptions!=null && oldOptions!="") {
+      var oldOptionsArray = oldOptions.split(";");
+      var currentOption = new Array();
+      var isInOptions = false;
+
+      for (var i=0; i<oldOptionsArray.length; i++) {
+        currentOption = oldOptionsArray[i].split(",");
+
+        if (currentOption[0]==oKey) {
+          isInOptions = true;
+          oldOptionsArray[i] = oKey+","+oValue;
+        }
+      }
+
+      if (isInOptions==false) {
+        localStorage.setItem(optionsKey, oldOptions+";"+oKey+","+oValue);
+      } else {
+        localStorage.setItem(optionsKey, oldOptionsArray.join(";"));
+      }
+    } else {
+      localStorage.setItem(optionsKey, oKey+","+oValue);
+    }
+  }
+};
+
+timetracker.getOption = function(oKey) {
+  var optionsKey = timetracker.config.optionsKey;
+
+  if (timetracker.config.savetype === "localStorage") {
+    var oldOptions = localStorage.getItem(optionsKey);
+
+    if (oldOptions!=null && oldOptions!="") {
+      var oldOptionsArray = oldOptions.split(";");
+      var currentOption = new Array();
+
+      for (var i=0; i<oldOptionsArray.length; i++) {
+        currentOption = oldOptionsArray[i].split(",");
+
+        if (currentOption[0]==oKey) {
+          return currentOption;
+        }
+      }
+    }
+
+    return null;
+  }
+}
+
+function escapeRegExp(str) {
+  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+}

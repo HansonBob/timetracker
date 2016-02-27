@@ -1,4 +1,5 @@
-var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+var days = ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+var months = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
 
 var contents = {
   'Start' : 'Start',
@@ -6,5 +7,7 @@ var contents = {
   'Save changes': 'Änderungen speichern',
   'create': 'Neues Tracking erstellen',
   'delete': 'ausgewählte Trackings löschen',
-  'double click to make changes': 'doppelclick für Änderungen'
+  'double click to make changes': 'doppelclick für Änderungen',
+  'Are you sure?' : "Sind Sie sicher?",
+  'no entries found' : 'keine Einträge gefunden'
 };
