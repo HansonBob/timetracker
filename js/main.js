@@ -24,7 +24,7 @@ function updateTrackList(trackcontainer) {
 
           var liSep = document.createElement("li");
           liSep.setAttribute("class", "date-separator "+dateOddEven);
-          liSep.innerHTML = timetracker.getDateFromDays(queue[i].date);
+          liSep.innerHTML = timetracker.getCompleteDateFromDays(queue[i].date);
           trackcontainer.appendChild(liSep);
 
           if (dateOddEven=="odd") {
@@ -173,13 +173,13 @@ window.onload = function() {
 
   var dateViewFrom = document.createElement("input");
   if (timetracker.getOption("dateFrom")!=null) {
-    dateViewFrom.setAttribute("value", timetracker.getOption("dateFrom")[1]);
+    dateViewFrom.setAttribute("value", timetracker.getDateFromDays( timetracker.getOption("dateFrom")[1] ) );
     dateViewFrom.value = timetracker.getDateFromDays( timetracker.getOption("dateFrom")[1] );
   }
 
   var dateViewTo = document.createElement("input");
   if (timetracker.getOption("dateTo")!=null) {
-    dateViewTo.setAttribute("value", timetracker.getOption("dateTo")[1]);
+    dateViewTo.setAttribute("value", timetracker.getDateFromDays( timetracker.getOption("dateTo")[1] ) );
     dateViewTo.value = timetracker.getDateFromDays( timetracker.getOption("dateTo")[1] );
   }
 
@@ -200,7 +200,7 @@ window.onload = function() {
       dateViewFrom.setAttribute("value", e.getAttribute("data-days") );
       dateViewFrom.value = timetracker.getDateFromDays( e.getAttribute("data-days") );
       datepickerFrom.hide();
-      timetracker.setOption("dateFrom", dateViewFrom.getAttribute("value"));
+      timetracker.setOption("dateFrom", e.getAttribute("data-days"));
       updateTrackList(tracks);
     }
   );
@@ -217,7 +217,7 @@ window.onload = function() {
       dateViewTo.setAttribute("value", e.getAttribute("data-days") );
       dateViewTo.value = timetracker.getDateFromDays( e.getAttribute("data-days") );
       datepickerTo.hide();
-      timetracker.setOption("dateTo", dateViewTo.getAttribute("value"));
+      timetracker.setOption("dateTo", e.getAttribute("data-days"));
       updateTrackList(tracks);
     }
   );
@@ -225,7 +225,11 @@ window.onload = function() {
   updateTrackList(tracks);
 
   dateViewFrom.addEventListener("keyup", function(){
-    timetracker.setOption("dateFrom", dateViewFrom.getAttribute("value"));
+    dateViewFrom.setAttribute("value", dateViewFrom.value);
+    var dateViewFromInDays = timetracker.getTimestampFromDate(dateViewFrom.getAttribute("value"));
+    dateViewFromInDays = timetracker.getTimestampInDays(dateViewFromInDays);
+
+    timetracker.setOption("dateFrom", dateViewFromInDays);
     updateTrackList(tracks);
   }, true);
 
@@ -234,7 +238,11 @@ window.onload = function() {
   }, true);
 
   dateViewTo.addEventListener("keyup", function(){
-    timetracker.setOption("dateTo", dateViewTo.getAttribute("value"));
+    dateViewTo.setAttribute("value", dateViewTo.value);
+    var dateViewToInDays = timetracker.getTimestampFromDate(dateViewTo.getAttribute("value"));
+    dateViewToInDays = timetracker.getTimestampInDays(dateViewToInDays);
+
+    timetracker.setOption("dateTo", dateViewToInDays);
     updateTrackList(tracks);
   }, true);
 

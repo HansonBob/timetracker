@@ -212,7 +212,7 @@ timetracker.getCurrentTimestamp = function() {
   return timestamp;
 };
 
-timetracker.getCurrentDateFromTimestamp = function(timestamp) {
+timetracker.getCurrentDateFromTimestamp = function(timestamp, showComplete) {
   var datestamp = "";
   var d = new Date();
   d.setTime(timestamp);
@@ -230,7 +230,13 @@ timetracker.getCurrentDateFromTimestamp = function(timestamp) {
   var yearDate = d.getFullYear();
   var dayName = days[d.getDay()];
 
-  datestamp = dayDate + "." + monthDate + "." + yearDate + " " + dayName;
+  datestamp = dayDate + "." + monthDate + "." + yearDate;
+
+  if (showComplete==true) {
+    datestamp = dayDate + "." + monthDate + "." + yearDate + " " + dayName;
+  } else {
+    datestamp = dayDate + "." + monthDate + "." + yearDate;
+  }
 
   return datestamp;
 };
@@ -321,10 +327,33 @@ timetracker.getDaysInTimestamp = function(days) {
   }
 }
 
+timetracker.getTimestampFromDate = function(date) {
+  if (typeof date!=="undefined") {
+    var dateCheck = date.match(/^(\d+)\.(\d+)\.(\d{4})$/);
+    if (dateCheck!=null) {
+      var newDate = new Date();
+      newDate.setFullYear(dateCheck[3]);
+      newDate.setMonth( (dateCheck[2]-1) );
+      newDate.setDate(dateCheck[1]);
+
+      return newDate.getTime();
+    }
+
+    return dateCheck;
+  }
+}
+
 timetracker.getDateFromDays = function(days) {
   if (typeof days!=="undefined") {
     var timestamp = days*1000*(24*60*60);
     return timetracker.getCurrentDateFromTimestamp(timestamp);
+  }
+}
+
+timetracker.getCompleteDateFromDays = function(days) {
+  if (typeof days!=="undefined") {
+    var timestamp = days*1000*(24*60*60);
+    return timetracker.getCurrentDateFromTimestamp(timestamp, true);
   }
 }
 
