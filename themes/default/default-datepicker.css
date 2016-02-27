@@ -53,6 +53,7 @@
 .datepicker .date-switch .date-prev, .datepicker .date-switch .date-next {
   cursor: pointer;
   display: inline-block;
+  text-align: center;
   width: 50%;
 }
 
