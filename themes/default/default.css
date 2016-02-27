@@ -69,6 +69,13 @@ body {
   padding: 0px;
 }
 
+@media (min-width: 991px) {
+  #tracks .content {
+    min-height: 50px;
+    min-width: 600px;
+  }
+}
+
 #tracks .content[data-write='disabled'] {
   background-color: #ddd;
   color: #444;
@@ -87,33 +94,30 @@ body {
 }
 
 #tracks .start, #tracks .stop {
-  height: 20px;
+  background: #fff;
+  border: 2px solid #000;
+  color: #000;
+  font-family: 'Tahoma';
+  font-size: 13px;
+  font-weight: 600;
+  padding: 4px 8px;
   overflow: hidden;
-  visibility: hidden;
-  width: 20px;
 }
 
 #tracks .stop {
-  width: 40px;
+  background: #000;
+  border: 2px solid #aaa;
+  color: #fff;
+  display: none;
 }
 
-#tracks .start:before, #tracks .stop:before {
-  content: "\025B6";
+
+#tracks [data-active='true'] {
   display: inline-block;
-  font-size: 20px;
-  line-height: 10px;
-  visibility: visible;
 }
 
-#tracks .stop:before {
-  content: "\02588";
-  font-size: 14px;
-  line-height: 1px;
-  text-align: center;
-}
-
-#tracks [data-started='started']:before {
-  content: "\02590\A0\0258C";
+#tracks [data-active='false'] {
+  display: none;
 }
 
 #tracks .id , #tracks .timestart, #tracks .timeend, #tracks .timediff {

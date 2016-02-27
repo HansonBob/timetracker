@@ -52,10 +52,12 @@ function updateTrackList(trackcontainer) {
         newTimerElement.setAttribute("class", "timeshow");
         newTimerElement.innerHTML = timetracker.getTimeFromMilliseconds((queue[i].timeend-queue[i].timestart));
 
-        timetracker.showTimer(queue[i].id, newTimerElement, newStopElement);
+        timetracker.showTimer(queue[i].id, newTimerElement, {inactive:newStartElement, active:newStopElement});
 
         newStartElement.setAttribute("class", "start");
         newStartElement.addEventListener("click", function(){
+          newStartElement.setAttribute("data-active", "false");
+          newStopElement.setAttribute("data-active", "true");
           timetracker.startTracker(queue[i].id, newTimerElement, newStopElement);
         }, true);
         newStartElement.innerHTML = timetracker.t("Start");
@@ -63,6 +65,8 @@ function updateTrackList(trackcontainer) {
         
         newStopElement.setAttribute("class", "stop");
         newStopElement.addEventListener("click", function(){
+          newStartElement.setAttribute("data-active", "true");
+          newStopElement.setAttribute("data-active", "false");
           timetracker.stopTracker(queue[i].id, newStopElement);
         }, true);
         newStopElement.innerHTML = timetracker.t("Stop");

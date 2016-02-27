@@ -24,7 +24,7 @@ timetracker.createTracker = function() {
   timetracker.saveTracker(newTrack["id"]);
 };
 
-timetracker.startTracker = function(id, element, callbackelement) {
+timetracker.startTracker = function(id, element, callbackelements) {
   if (timetracker.queue[id].timeend!=1) {
     if (timetracker.queue[id].timestart!=0 && timetracker.queue[id].timeend!=0) {
       timetracker.queue[id].timestart = timetracker.getCurrentTimestamp()-(timetracker.queue[id].timeend-timetracker.queue[id].timestart);
@@ -34,7 +34,7 @@ timetracker.startTracker = function(id, element, callbackelement) {
 
     timetracker.queue[id].timeend = 1;
     if (typeof element!="undefined") {
-      timetracker.showTimer(id, element, callbackelement);
+      timetracker.showTimer(id, element, callbackelements);
     }
 
     timetracker.saveTracker(id);
@@ -47,7 +47,7 @@ timetracker.stopTracker = function(id, element) {
     timetracker.saveTracker(id);
 
     if (typeof element!="undefined") {
-      element.setAttribute("data-started", "");
+      element.setAttribute("data-active", "false");
     }
 
     if (typeof timetracker.timers[id]!=="undefined") {
@@ -268,7 +268,7 @@ timetracker.setMessage = function(id, message) {
   timetracker.saveTracker(id);
 };
 
-timetracker.showTimer = function(id, element, callbackelement) {
+timetracker.showTimer = function(id, element, callbackelements) {
   if (typeof timetracker.queue[id]!="undefined"
     && timetracker.queue[id]!=null
     && typeof timetracker.queue[id].timeend!="undefined"
@@ -281,13 +281,21 @@ timetracker.showTimer = function(id, element, callbackelement) {
     var formattedTime = timetracker.getTimeFromMilliseconds(currentDiff);
     
     element.innerHTML = formattedTime;
+    
+    if (typeof callbackelements!="undefined") {
+      for (var i in callbackelements) {
+        if (i=="inactive") {
+          callbackelements[i].setAttribute("data-active", "false");
+        }
 
-    if (typeof callbackelement!="undefined") {
-      callbackelement.setAttribute("data-started", "started");
+        if (i=="active") {
+          callbackelements[i].setAttribute("data-active", "true");
+        }
+      }
     }
 
     timetracker.timers[id] = window.setTimeout(function(){
-      timetracker.showTimer(id, element, callbackelement);
+      timetracker.showTimer(id, element, callbackelements);
     }, 1000);
   }
 };

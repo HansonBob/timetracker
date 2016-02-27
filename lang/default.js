@@ -8,5 +8,6 @@ var contents = {
   'create': 'create new tracking',
   'delete': 'delete selected tracking',
   'double click to make changes': 'double click to make change',
-  'Are you sure?' : "Are you sure?"
+  'Are you sure?' : 'Are you sure?',
+  'no entries found' : 'no entries found'
 };
