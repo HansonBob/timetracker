@@ -7,5 +7,7 @@ var contents = {
   'Save changes': 'Änderungen speichern',
   'create': 'Neues Tracking erstellen',
   'delete': 'ausgewählte Trackings löschen',
-  'double click to make changes': 'doppelclick für Änderungen'
+  'double click to make changes': 'doppelclick für Änderungen',
+  'Are you sure?' : "Sind Sie sicher?",
+  'no entries found' : 'keine Einträge gefunden'
 };

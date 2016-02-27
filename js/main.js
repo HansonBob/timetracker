@@ -132,6 +132,10 @@ function updateTrackList(trackcontainer) {
     newStatusBar.setAttribute("id", "statusbar-"+cleanedDateString);
     trackcontainer.appendChild(newStatusBar); 
   }
+
+  if (typeof queue!="undefined" && queue.length==0) {
+    trackcontainer.innerHTML = '<li>'+timetracker.t('no entries found')+'</li>';
+  }
 }
 
 window.onload = function() {
@@ -184,9 +188,14 @@ window.onload = function() {
   container.appendChild(dateView);
   container.appendChild(form);
 
+  var savedDateFrom = timetracker.getOption("dateFrom");
+  if (savedDateFrom!=null) {
+    savedDateFrom = savedDateFrom[1];
+  }
+
   var datepickerFrom = new Datepicker(
     dateViewFrom,
-    timetracker.getDaysInTimestamp( timetracker.getOption("dateFrom")[1] ),
+    timetracker.getDaysInTimestamp( savedDateFrom ),
     function(e) {
       dateViewFrom.setAttribute("value", e.getAttribute("data-days") );
       dateViewFrom.value = timetracker.getDateFromDays( e.getAttribute("data-days") );
@@ -196,9 +205,14 @@ window.onload = function() {
     }
   );
 
+  var savedDateTo = timetracker.getOption("dateTo");
+  if (savedDateTo!=null) {
+    savedDateTo = savedDateTo[1];
+  }
+
   var datepickerTo = new Datepicker(
     dateViewTo,
-    timetracker.getDaysInTimestamp( timetracker.getOption("dateTo")[1] ),
+    timetracker.getDaysInTimestamp( savedDateTo ),
     function(e) {
       dateViewTo.setAttribute("value", e.getAttribute("data-days") );
       dateViewTo.value = timetracker.getDateFromDays( e.getAttribute("data-days") );

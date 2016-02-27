@@ -6,5 +6,7 @@ var contents = {
   'Stop' : 'Stop',
   'Save changes': 'Save changes',
   'create': 'create new tracking',
-  'delete': 'delete selected tracking'
+  'delete': 'delete selected tracking',
+  'double click to make changes': 'double click to make change',
+  'Are you sure?' : "Are you sure?"
 };

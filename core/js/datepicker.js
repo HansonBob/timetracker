@@ -13,7 +13,7 @@ function Datepicker(element, milliseconds, clickCallback) {
     var newDivSwitchDateNext = document.createElement("div");
     var elementParent = element.parentNode;
 
-    if (milliseconds==null) {
+    if (milliseconds==null || milliseconds=="undefined") {
       startTimestamp = milliseconds;
     }
 

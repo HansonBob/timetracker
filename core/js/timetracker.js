@@ -175,8 +175,25 @@ timetracker.getTrackerQueue = function() {
   }
 };
 
-timetracker.removeTrackerContent = function(id) {
+timetracker.removeAllTrackerContent = function() {
+  if (window.confirm(timetracker.t("Are you sure?"))==true) {
+    if (typeof timetracker.queue!="undefined") {
+      for (var i in timetracker.queue) {
+        if (typeof timetracker.queue[i]!="undefined" && timetracker.queue[i]!=null) {
+          if (timetracker.config.savetype === "localStorage") {
+            localStorage.removeItem(timetracker.config.saveformatKey+""+timetracker.queue[i].id);
+          }
+        }
+      }
 
+      timetracker.queue = null;
+      delete(timetracker.queue);
+    }
+
+    if (timetracker.config.savetype === "localStorage") {
+      localStorage.removeItem("timetracker_options");
+    }
+  }
 };
 
 timetracker.getTrackerContent = function(id) {
@@ -299,7 +316,7 @@ timetracker.getTimestampInDays = function(timestamp) {
 }
 
 timetracker.getDaysInTimestamp = function(days) {
-  if (typeof days!=="undefined") {
+  if (days!=null || typeof days!=="undefined") {
     return Math.floor(days*1000*(24*60*60));
   }
 }
