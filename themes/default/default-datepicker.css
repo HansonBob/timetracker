@@ -34,6 +34,7 @@
   float:left;
   height: 20px;
   padding: 2px;
+  text-align: center;
   width: 20px;
 }
 
@@ -46,8 +47,8 @@
   color: #fff;
 }
 
-.datepicker .date-switch {
-
+.datepicker .date-switch + div {
+  text-align: center;
 }
 
 .datepicker .date-switch .date-prev, .datepicker .date-switch .date-next {
