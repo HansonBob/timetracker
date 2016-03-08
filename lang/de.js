@@ -9,5 +9,7 @@ var contents = {
   'delete': 'ausgewählte Trackings löschen',
   'double click to make changes': 'doppelclick für Änderungen',
   'Are you sure?' : "Sind Sie sicher?",
-  'no entries found' : 'keine Einträge gefunden'
+  'no entries found' : 'keine Einträge gefunden',
+  'period of time' : 'Zeitraum',
+  'to' : 'bis'
 };

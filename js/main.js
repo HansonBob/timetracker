@@ -175,19 +175,35 @@ window.onload = function() {
 
   form.appendChild(tracks);
 
+  var dateViewFromLabel = document.createElement("label");
+  dateViewFromLabel.innerHTML = timetracker.t('period of time')+":";
+  dateViewFromLabel.setAttribute("for", "dateViewFrom");
+  dateViewFromLabel.setAttribute("class", "dateViewFromLabel");
+
   var dateViewFrom = document.createElement("input");
+  dateViewFrom.setAttribute("id", "dateViewFrom");
+
   if (timetracker.getOption("dateFrom")!=null) {
     dateViewFrom.setAttribute("value", timetracker.getDateFromDays( timetracker.getOption("dateFrom")[1] ) );
     dateViewFrom.value = timetracker.getDateFromDays( timetracker.getOption("dateFrom")[1] );
   }
 
+  var dateViewToLabel = document.createElement("label");
+  dateViewToLabel.innerHTML = timetracker.t('to')+":";
+  dateViewToLabel.setAttribute("for", "dateViewTo");
+  dateViewToLabel.setAttribute("class", "dateViewToLabel");
+
   var dateViewTo = document.createElement("input");
+  dateViewTo.setAttribute("id", "dateViewTo");
+
   if (timetracker.getOption("dateTo")!=null) {
     dateViewTo.setAttribute("value", timetracker.getDateFromDays( timetracker.getOption("dateTo")[1] ) );
     dateViewTo.value = timetracker.getDateFromDays( timetracker.getOption("dateTo")[1] );
   }
 
+  dateView.appendChild(dateViewFromLabel);
   dateView.appendChild(dateViewFrom);
+  dateView.appendChild(dateViewToLabel);
   dateView.appendChild(dateViewTo);
   container.appendChild(dateView);
   container.appendChild(form);
