@@ -6,6 +6,8 @@ function updateTrackList(trackcontainer) {
   var dateOddEven = "even";
   var trackOddEven = "odd";
   var dataStatusBarArray = new Array();
+  var allDates = new Array();
+  var lastEntry = "";
   
   for (var i in queue) {
     (function(i) {
@@ -17,9 +19,12 @@ function updateTrackList(trackcontainer) {
       }
 
       dataStatusBar = queue[i].date;
+      lastEntry = i;
     }(i));
   }
-  
+
+  dataStatusBarArray[dataStatusBar] = lastEntry;
+
   for (var i in queue) {
     (function(i) {
       if (queue[i]!=null) {
@@ -60,6 +65,11 @@ function updateTrackList(trackcontainer) {
 
         newStartElement.setAttribute("class", "start");
         newStartElement.addEventListener("click", function(){
+          if (document.getElementById("dateCheckbox"+queue[i].id).checked==true) {
+            document.getElementById("dateCheckbox"+queue[i].id).checked=false;
+            allDates[queue[i].date] = allDates[queue[i].date] - timetracker.getTimestampDifference(queue[i].id);
+          }
+
           newStartElement.setAttribute("data-active", "false");
           newStopElement.setAttribute("data-active", "true");
           timetracker.startTracker(queue[i].id, newTimerElement, newStopElement);
@@ -117,7 +127,16 @@ function updateTrackList(trackcontainer) {
         li.innerHTML += "<div class=\"timediff\">"+timetracker.getTimestampInSeconds(queue[i].timeend-queue[i].timestart)+"</div>";
 
         li.innerHTML += "<input type=\"hidden\" name=\"id[]\" value=\""+queue[i].id+"\" />";
-        li.innerHTML += "<input class=\"checkbox\" type=\"checkbox\" name=\"checked[]\" value=\""+queue[i].id+"\" />";
+
+        var dateCheckbox = document.createElement("input");
+        dateCheckbox.setAttribute("id", "dateCheckbox"+queue[i].id);
+        dateCheckbox.setAttribute("class", "checkbox");
+        dateCheckbox.setAttribute("type", "checkbox");
+        dateCheckbox.setAttribute("name", "checked[]");
+        dateCheckbox.setAttribute("value", queue[i].id);
+        updateStatusbar(allDates, dateCheckbox);
+
+        li.appendChild(dateCheckbox);
 
         li.appendChild(contentElement);
         li.appendChild(newStartElement);
@@ -130,13 +149,13 @@ function updateTrackList(trackcontainer) {
           && typeof dataStatusBarArray[queue[i].date]!="undefined"
           && dataStatusBarArray[queue[i].date]==i
         ) {
-            var cleanedDateString = queue[i].date.toLowerCase();
-            cleanedDateString = cleanedDateString.replace(/[^a-z0-9\-\_]/g, "-");       
+          var cleanedDateString = queue[i].date.toLowerCase();
+          cleanedDateString = cleanedDateString.replace(/[^a-z0-9\-\_]/g, "-");       
 
-            var newStatusBar = document.createElement("li");
-            newStatusBar.setAttribute("class", "statusbar");
-            newStatusBar.setAttribute("id", "statusbar-"+cleanedDateString);
-            trackcontainer.appendChild(newStatusBar);
+          var newStatusBar = document.createElement("li");
+          newStatusBar.setAttribute("class", "statusbar");
+          newStatusBar.setAttribute("id", "statusbar-"+cleanedDateString);
+          trackcontainer.appendChild(newStatusBar);
         }
       }
     }(i));
@@ -303,42 +322,32 @@ window.onload = function() {
 
     updateTrackList(tracks);
   }, true);
-
-  var allInputs = document.getElementsByTagName("input");
-  var allDates = new Array();
-  for(var i=0; i<allInputs.length; i++) {
-    if (typeof allInputs[i].getAttribute("class")!="undefined" && allInputs[i].getAttribute("class")=="checkbox") {
-
-      allInputs[i].addEventListener("change" , function(e){
-        //var localStorageIdKey = timetracker.config.saveformatKey;
-        //var storagedEntry = localStorage.getItem(localStorageIdKey+allInputs[i].value);
-        var savedEntry = timetracker.getTrackerContent(this.value);
-
-        if (typeof allDates[savedEntry.date]=="undefined" || allDates[savedEntry.date]==null) {
-          allDates[savedEntry.date] = 0;
-        }
-
-        if (typeof allDates[savedEntry.date]!="undefined" && allDates[savedEntry.date]!=null) {
-          if (timetracker.getTimestampDifference(this.value)!=null) {
-            if (this.checked==true) {
-              allDates[savedEntry.date] = allDates[savedEntry.date] + timetracker.getTimestampDifference(this.value);
-            } else {
-              allDates[savedEntry.date] = allDates[savedEntry.date] - timetracker.getTimestampDifference(this.value);
-            }
-
-            var cleanedDateString = savedEntry.date.toLowerCase();
-            cleanedDateString = cleanedDateString.replace(/[^a-z0-9\-\_]/g, "-"); 
-
-            if (typeof document.getElementById("statusbar-"+cleanedDateString)!="undefined") {
-              document.getElementById("statusbar-"+cleanedDateString).innerHTML = timetracker.getTimeFromMilliseconds(allDates[savedEntry.date]);
-
-              if (document.getElementById("statusbar-"+cleanedDateString).innerHTML=="0") {
-                document.getElementById("statusbar-"+cleanedDateString).innerHTML = "";
-              }
-            }
-          }
-        }
-      }, true);
-    }
-  }
 };
+
+function updateStatusbar(allDates, element) {
+  element.addEventListener("change" , function(e){
+    var savedEntry = timetracker.getTrackerContent(this.value);
+
+    if (typeof allDates[savedEntry.date]=="undefined" || allDates[savedEntry.date]==null) {
+      allDates[savedEntry.date] = 0;
+    }
+
+    if (typeof allDates[savedEntry.date]!="undefined" && allDates[savedEntry.date]!=null) {
+      if (timetracker.getTimestampDifference(this.value)!=null) {
+        if (this.checked==true) {
+          allDates[savedEntry.date] = allDates[savedEntry.date] + timetracker.getTimestampDifference(this.value);
+        } else {
+          allDates[savedEntry.date] = allDates[savedEntry.date] - timetracker.getTimestampDifference(this.value);
+        }
+
+        var cleanedDateString = savedEntry.date.toLowerCase();
+        cleanedDateString = cleanedDateString.replace(/[^a-z0-9\-\_]/g, "-"); 
+
+        if (document.getElementById("statusbar-"+cleanedDateString)!=null && typeof document.getElementById("statusbar-"+cleanedDateString)!="undefined") {
+          document.getElementById("statusbar-"+cleanedDateString).innerHTML = timetracker.getTimeFromMilliseconds(allDates[savedEntry.date]);
+        }
+      }
+    }
+
+  }, true);
+}
