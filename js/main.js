@@ -91,11 +91,11 @@ function updateTrackList(trackcontainer) {
         
         if (queue[i].timestart!=0 && (queue[i].timeend!=0 || queue[i].timeend!=1)) {
           contentElement.setAttribute("data-write", "disabled");
+          contentElement.setAttribute("title", timetracker.t("double click to make changes"));
         } else {
           contentElement.setAttribute("data-write", "enabled");
         }
 
-        contentElement.setAttribute("title", timetracker.t("double click to make changes"));
         contentElement.innerHTML = queue[i].content;
 
         contentElement.addEventListener("dblclick", function() {
