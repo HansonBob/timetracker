@@ -246,6 +246,10 @@ window.onload = function() {
       datepickerFrom.hide();
       timetracker.setOption("dateFrom", e.getAttribute("data-days"));
       updateTrackList(tracks);
+    },
+    {
+      "months" : months,
+      "days" : daysShort
     }
   );
 
@@ -263,6 +267,10 @@ window.onload = function() {
       datepickerTo.hide();
       timetracker.setOption("dateTo", e.getAttribute("data-days"));
       updateTrackList(tracks);
+    },
+    {
+      "months" : months,
+      "days" : daysShort
     }
   );
 

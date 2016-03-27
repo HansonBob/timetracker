@@ -1,4 +1,4 @@
-function Datepicker(element, milliseconds, clickCallback) {
+function Datepicker(element, milliseconds, clickCallback, localLabels) {
   if (typeof element!="undefined") {
     var date = new Date();
     var startTimestamp = date.getTime();
@@ -6,6 +6,7 @@ function Datepicker(element, milliseconds, clickCallback) {
     var days = new Array();
     var newDivOverlay = document.createElement("div");
     var newDivContainer = document.createElement("div");
+    var newDivWeekDates = document.createElement("div");
     var newDivDates = document.createElement("div");
     var newDivLabel = document.createElement("div");
     var newDivSwitchDate = document.createElement("div");
@@ -27,6 +28,7 @@ function Datepicker(element, milliseconds, clickCallback) {
     newDivSwitchDate.setAttribute("class", "date-switch");
     newDivSwitchDatePrev.setAttribute("class", "date-prev");
     newDivSwitchDateNext.setAttribute("class", "date-next");
+    newDivWeekDates.setAttribute("class", "weekdays");
     newDivDates.setAttribute("class", "days");
 
     newDivSwitchDatePrev.innerHTML = '-';
@@ -36,12 +38,13 @@ function Datepicker(element, milliseconds, clickCallback) {
     newDivSwitchDate.appendChild(newDivSwitchDateNext);
     newDivContainer.appendChild(newDivSwitchDate);
     newDivContainer.appendChild(newDivLabel);
+    newDivContainer.appendChild(newDivWeekDates);
 
     function init(year, month) {
       dayCounter = 0;
 
-      if (typeof months!="undefined") {
-        monthLabel = t(months[month]);
+      if (typeof localLabels!="undefined" && typeof localLabels.months!="undefined") {
+        monthLabel = t(localLabels.months[month]);
       }
 
       newDivLabel.innerHTML = monthLabel+" "+year;
@@ -49,10 +52,31 @@ function Datepicker(element, milliseconds, clickCallback) {
       date = new Date(year, month, 1);
       while(date.getMonth() === month) {
         days.push(new Date(date));
-        dayCounter++;
+        
+        if (dayCounter>0 && dayCounter<8) {
+          if (typeof localLabels!="undefined" && typeof localLabels.days!="undefined") {
+            var weekDay = document.createElement("div");
+            var tmpDay = new Date(date).getDay()-1;
+
+            if (tmpDay<0) {
+              tmpDay = 6;
+            }
+
+            weekDay.innerHTML = localLabels.days[tmpDay];
+
+            if (dayCounter==1) {
+              weekDay.setAttribute("class", "day weekday next-row");
+            } else {
+              weekDay.setAttribute("class", "day weekday");
+            }
+
+            newDivWeekDates.appendChild(weekDay);
+          }
+        }
 
         newDivDates.appendChild( createDay(date, dayCounter, clickCallback) );
-
+        
+        dayCounter++;
         date.setDate(date.getDate() + 1);
       }
     }
@@ -71,6 +95,7 @@ function Datepicker(element, milliseconds, clickCallback) {
 
       newDivDates.innerHTML = "";
       newDivLabel.innerHTML = "";
+      newDivWeekDates.innerHTML = "";
       init(year, month);
     }, true);
 
@@ -83,6 +108,7 @@ function Datepicker(element, milliseconds, clickCallback) {
       }
       newDivDates.innerHTML = "";
       newDivLabel.innerHTML = "";
+      newDivWeekDates.innerHTML = "";
       init(year, month);
     }, true);
 
@@ -160,8 +186,8 @@ function Datepicker(element, milliseconds, clickCallback) {
     function t(a, b) {
       var b = b || new Array();
 
-      if (typeof months[a]!="undefined") {
-        return months[a];
+      if (typeof localLabels!="undefined" && typeof localLabels.months[a]!="undefined") {
+        return localLabels.months[a];
       }
 
       return a;
