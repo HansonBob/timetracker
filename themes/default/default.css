@@ -4,6 +4,14 @@ body {
   margin: 0px;
 }
 
+a, div {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+
+  user-select: none;
+}
+
 #container {
   height: 100%;
   position: absolute;
@@ -76,6 +84,7 @@ body {
 #tracks .content[data-write='disabled'] {
   background-color: #ddd;
   color: #444;
+  border: 2px solid #000;
 }
 
 #tracks .checkbox, #tracks .start, #tracks .stop {
