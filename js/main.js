@@ -5,21 +5,25 @@ function updateTrackList(trackcontainer) {
   var dateSeparator, dataStatusBar = "";
   var dateOddEven = "even";
   var trackOddEven = "odd";
+  var dataStatusBarArray = new Array();
+  
+  for (var i in queue) {
+    (function(i) {
+      if (queue[i]!=null
+        && dataStatusBar==queue[i].date
+        && typeof queue[i].date!="undefined"
+      ) {
+        dataStatusBarArray[queue[i].date] = i;
+      }
+
+      dataStatusBar = queue[i].date;
+    }(i));
+  }
   
   for (var i in queue) {
     (function(i) {
       if (queue[i]!=null) {
         if (dateSeparator!=queue[i].date && typeof queue[i].date!="undefined") {
-          if (typeof queue[(i-1)]!="undefined" && queue[(i-1)]!=null) {
-            var cleanedDateString = queue[(i-1)].date.toLowerCase();
-            cleanedDateString = cleanedDateString.replace(/[^a-z0-9\-\_]/g, "-");       
-
-            var newStatusBar = document.createElement("li");
-            newStatusBar.setAttribute("class", "statusbar");
-            newStatusBar.setAttribute("id", "statusbar-"+cleanedDateString);
-            trackcontainer.appendChild(newStatusBar);
-          }
-
           dateSeparator = queue[i].date;
 
           var liSep = document.createElement("li");
@@ -121,20 +125,21 @@ function updateTrackList(trackcontainer) {
         //li.appendChild(newSaveElement);
         li.appendChild(newTimerElement);
         trackcontainer.appendChild(li);
+
+        if (typeof dataStatusBarArray!="undefined"
+          && typeof dataStatusBarArray[queue[i].date]!="undefined"
+          && dataStatusBarArray[queue[i].date]==i
+        ) {
+            var cleanedDateString = queue[i].date.toLowerCase();
+            cleanedDateString = cleanedDateString.replace(/[^a-z0-9\-\_]/g, "-");       
+
+            var newStatusBar = document.createElement("li");
+            newStatusBar.setAttribute("class", "statusbar");
+            newStatusBar.setAttribute("id", "statusbar-"+cleanedDateString);
+            trackcontainer.appendChild(newStatusBar);
+        }
       }
     }(i));
-  }
-
-  var lastEntry = (queue.length-1);
-
-  if (typeof queue[lastEntry]!="undefined" && queue[lastEntry]!=null) {
-    var cleanedDateString = queue[lastEntry].date.toLowerCase();
-    cleanedDateString = cleanedDateString.replace(/[^a-z0-9\-\_]/g, "-");       
-
-    var newStatusBar = document.createElement("li");
-    newStatusBar.setAttribute("class", "statusbar");
-    newStatusBar.setAttribute("id", "statusbar-"+cleanedDateString);
-    trackcontainer.appendChild(newStatusBar); 
   }
 
   if (typeof queue!="undefined" && queue.length==0) {
