@@ -1,4 +1,5 @@
 var days = ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+var daysShort = ['So','Mo','Di','Mi','Do','Fr','Sa'];
 var months = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
 
 var contents = {
