@@ -18,7 +18,10 @@ function updateTrackList(trackcontainer) {
         dataStatusBarArray[queue[i].date] = i;
       }
 
-      dataStatusBar = queue[i].date;
+      if (queue[i]!=null) {
+        dataStatusBar = queue[i].date;
+      }
+      
       lastEntry = i;
     }(i));
   }
