@@ -12,5 +12,12 @@ var contents = {
   'Are you sure?' : "Sind Sie sicher?",
   'no entries found' : 'keine Einträge gefunden',
   'period of time' : 'Zeitraum',
-  'to' : 'bis'
+  'to' : 'bis',
+  'settings' : 'Einstellungen',
+  'language' : 'Sprache',
+  'theme' : 'Theme',
+  'save changes' : 'Änderung speichern',
+  'reload page' : 'Seite neuladen?',
+  'default' : 'Standard',
+  'de' : 'Deutsch',
 };

@@ -194,6 +194,101 @@ window.onload = function() {
   var dateView = document.createElement("form");
   dateView.setAttribute("class", "menu");
 
+  var settingsBtn = document.createElement("div");
+  settingsBtn.setAttribute("id", "settings");
+  settingsBtn.innerHTML = "<span>" + timetracker.t("settings") + "</span>";
+
+  settingsPopup = document.createElement("div");
+  settingsPopup.setAttribute("id", "settingsPopup");
+  settingsPopup.setAttribute("class", "hide");
+
+  var settingsPopupClose = document.createElement("div");
+  settingsPopupClose.setAttribute("class", "settings-popup-close");
+  settingsPopupClose.innerHTML = "x";
+
+  settingsPopupClose.addEventListener("click", function(){
+    settingsPopup.setAttribute("class", "hide");
+  }, true);
+
+  settingsPopup.appendChild(settingsPopupClose);
+
+  var options = timetracker.getAllChangeableOptions();
+
+  for (var i in options) {
+    var newOptionLabel = document.createElement("label");
+    var newOptionInput = "input";
+    var currentOption = timetracker.getOption(i);
+
+    if (timetracker.configTypes[i].type!="input") {
+      newOptionInput = timetracker.configTypes[i].type;
+
+      if (timetracker.configTypes[i].type=="select") {
+        newOptionInput = document.createElement(newOptionInput);
+
+        for (var k in timetracker.configTypes[i].values) {
+          var option = document.createElement("option");
+          option.setAttribute("value", timetracker.configTypes[i].values[k]);
+          option.innerHTML = timetracker.t(timetracker.configTypes[i].values[k]);
+
+          if (currentOption[1]==timetracker.configTypes[i].values[k]) {
+            option.setAttribute("selected", "selected");
+          }
+
+          newOptionInput.appendChild(option);
+        }
+      }
+    } else {
+      newOptionInput = document.createElement(newOptionInput);
+      newOptionInput.value = currentOption[1];
+    }
+
+    newOptionLabel.innerHTML = timetracker.t(i);
+    newOptionInput.setAttribute("name", i);
+
+    settingsPopup.appendChild(newOptionLabel);
+    settingsPopup.appendChild(newOptionInput);
+  }
+
+  settingsPopupSaveBtn = document.createElement("div");
+  settingsPopupSaveBtn.innerHTML = timetracker.t("save changes");
+  settingsPopupSaveBtn.setAttribute("id", "settingsPopupSaveBtn");
+  settingsPopupSaveBtn.setAttribute("class", "btn-default");
+
+  settingsPopupSaveBtn.addEventListener("click", function(){
+    var settings = settingsPopup.childNodes;
+
+    for (var i in settings) {
+      if (settings[i].nodeName=="INPUT" || settings[i].nodeName=="SELECT" || settings[i].nodeName=="TEXTAREA") {        
+        timetracker.setOption(
+          settings[i].getAttribute("name"),
+          settings[i].value
+        );
+      }
+    }
+
+    var winConfirm = window.confirm(timetracker.t("reload page"));
+
+    if (winConfirm==true) {
+      location.reload();
+    }
+  }, true);
+  
+  settingsPopup.appendChild(settingsPopupSaveBtn);
+
+  settingsBtn.addEventListener("click", function(){
+    var settingsPopup = document.getElementById("settingsPopup");
+    var leftPos = window.innerWidth/2;
+    var topPos = window.innerHeight/2;
+    
+    settingsPopup.setAttribute("style", "left:"+leftPos+"px; top:"+topPos+"px;");
+
+    if (settingsPopup.getAttribute("class")=="hide") {
+      settingsPopup.setAttribute("class", "show");
+    } else {
+      settingsPopup.setAttribute("class", "hide");
+    }
+  }, true);
+
   var form = document.createElement("form");
   form.setAttribute("id", "formTimetracks");
 
@@ -233,6 +328,8 @@ window.onload = function() {
   dateView.appendChild(dateViewToLabel);
   dateView.appendChild(dateViewTo);
   container.appendChild(dateView);
+  dateView.appendChild(settingsBtn);
+  dateView.appendChild(settingsPopup);
   container.appendChild(form);
 
   var savedDateFrom = timetracker.getOption("dateFrom");

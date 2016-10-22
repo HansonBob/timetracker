@@ -9,3 +9,14 @@ timetracker.config = {
   "language" : "default",
   "theme" : "default"
 };
+
+timetracker.configTypes = {
+  "language" : {
+    "type" : "select",
+    "values" : new Array('default', 'de')
+  },
+  "theme" : {
+    "type" : "select",
+    "values" : new Array('default')
+  }
+}
