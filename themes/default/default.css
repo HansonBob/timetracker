@@ -228,7 +228,7 @@ ul.menu li {
 #settingsPopup {
   background: #eee;
   height: 150px;
-  padding: 60px 20px 20px 20px;
+  padding: 20px;
   position: absolute;
   right: 0px;
   top: 40px;
@@ -256,7 +256,7 @@ ul.menu li {
   width: 100px;
 }
 
-#settingsPopup input, #settingsPopup select {
+#settingsPopup input, #settingsPopup select, #settingsPopup a {
   display: block;
   float: right;
   margin-bottom: 10px;
@@ -266,6 +266,7 @@ ul.menu li {
 #settingsPopupSaveBtn {
   clear: both;
   cursor: pointer;
+  margin-top: 10px;
 }
 
 .settings-popup-close {

@@ -91,7 +91,7 @@ function updateTrackList(trackcontainer) {
         newStopElement.setAttribute("title", timetracker.t("stop"));
 
         newEditElement.setAttribute("class", "edit");
-        newEditElement.innerHTML = timetracker.t("Edit");
+        newEditElement.innerHTML = timetracker.t("edit");
         newEditElement.setAttribute("title", timetracker.t("edit"));
         newEditElement.setAttribute("class", "btn-default");
         newEditElement.setAttribute("data-state", "edit");
@@ -357,6 +357,13 @@ window.onload = function() {
 
           newOptionInput.appendChild(option);
         }
+      }
+
+      if (timetracker.configTypes[i].type=="link") {
+        newOptionInput = document.createElement("a");
+        newOptionInput.setAttribute("href", timetracker.configTypes[i].href);
+        newOptionInput.setAttribute("target", timetracker.configTypes[i].target);
+        newOptionInput.innerHTML = timetracker.t(timetracker.configTypes[i].text);
       }
     } else {
       newOptionInput = document.createElement(newOptionInput);
