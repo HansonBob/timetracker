@@ -108,16 +108,48 @@ function updateTrackList(trackcontainer) {
               if (typeof li.childNodes[k].getAttribute!="undefined"
                 && typeof li.childNodes[k].getAttribute("class")!="undefined"
                 && li.childNodes[k].getAttribute("class")=="timeshow"
-                && document.getElementById("change"+queue[i].id)==null
+                && document.getElementById("change_time"+queue[i].id)==null
               ) {
                 newEditElement.setAttribute("title", timetracker.t("save"));
                 newEditElement.innerHTML = timetracker.t("save");
+                newStartElement.setAttribute("data-active", "false");
 
-                var newInput = document.createElement("input");
-                newInput.setAttribute("id", "change"+queue[i].id);
-                newInput.value = timetracker.getTimeFromMilliseconds((queue[i].timeend-queue[i].timestart));
+                document.getElementById("cancel" + queue[i].id).setAttribute("class", "btn-default show");
+
+                var newInputTime = document.createElement("input");
+                newInputTime.setAttribute("id", "change_time"+queue[i].id);
+                newInputTime.setAttribute("class", "edit-input");
+                newInputTime.value = timetracker.getTimeFromMilliseconds((queue[i].timeend-queue[i].timestart));
+
+                var newInputDate = document.createElement("input");
+                newInputDate.setAttribute("id", "change_date"+queue[i].id);
+                newInputDate.setAttribute("class", "edit-input");
+                
+                var startDate = timetracker.getCurrentDateFromTimestamp(timetracker.queue[queue[i].id].timestart);
+                newInputDate.value = startDate;
+
                 li.childNodes[k].innerHTML = "";
-                li.childNodes[k].appendChild(newInput);
+                li.childNodes[k].appendChild(newInputTime);
+                li.childNodes[k].appendChild(newInputDate);
+
+                var changeDateDatepicker = new Datepicker(
+                  newInputDate,
+                  timetracker.queue[queue[i].id].timestart,
+                  function(e) {
+                    newInputDate.setAttribute("value", e.getAttribute("data-days") );
+                    newInputDate.value = timetracker.getDateFromDays( e.getAttribute("data-days") );
+                    newInputDate.setAttribute("value", newInputDate.value);
+                    changeDateDatepicker.hide();
+                  },
+                  {
+                    "months" : months,
+                    "days" : daysShort
+                  }
+                );
+
+                newInputDate.addEventListener("focus", function(e){
+                  changeDateDatepicker.show(e);
+                }, true);
               }
             }
           } else {
@@ -129,9 +161,12 @@ function updateTrackList(trackcontainer) {
               if (typeof li.childNodes[k].getAttribute!="undefined"
                 && typeof li.childNodes[k].getAttribute("class")!="undefined"
                 && li.childNodes[k].getAttribute("class")=="timeshow"
-                && document.getElementById("change"+queue[i].id)!=null
+                && document.getElementById("change_time"+queue[i].id)!=null
               ) {
-                var newTimeValue = document.getElementById("change"+queue[i].id).value;
+                var newTimeValue = document.getElementById("change_time"+queue[i].id).value;
+                var newDateValue = document.getElementById("change_date"+queue[i].id).value;
+
+                document.getElementById("cancel" + queue[i].id).setAttribute("class", "btn-default hide");
 
                 try {
                   newTimeValue = newTimeValue.split(":");
@@ -144,8 +179,15 @@ function updateTrackList(trackcontainer) {
 
                   li.childNodes[k].innerHTML = timetracker.getTimeFromMilliseconds(newTimeValue);
 
+                  var dateTimestamp = timetracker.getTimestampFromDate(newDateValue);
+                  timetracker.queue[queue[i].id].timestart = dateTimestamp;
+                  timetracker.queue[queue[i].id].date = timetracker.getTimestampInDays(dateTimestamp);
+
                   timetracker.queue[queue[i].id].timeend = parseInt(timetracker.queue[queue[i].id].timestart) + parseInt(newTimeValue);
+                  
                   timetracker.saveTracker(queue[i].id);
+
+                  updateTrackList(tracks);
                 } catch(e) {
                   alert(timetracker.t("an error occured. changes cancelled"));
                 }
@@ -153,6 +195,16 @@ function updateTrackList(trackcontainer) {
             }
 
           }
+        }, true);
+
+        var newCancelEditBtn = document.createElement("a");
+        newCancelEditBtn.setAttribute("id", "cancel" + queue[i].id);
+        newCancelEditBtn.setAttribute("class", "btn-default hide");
+        newCancelEditBtn.setAttribute("title", timetracker.t("cancel"));
+        newCancelEditBtn.innerHTML = timetracker.t("cancel");
+
+        newCancelEditBtn.addEventListener("click", function(){
+          updateTrackList(tracks);
         }, true);
 
         var contentElement = document.createElement("textarea");
@@ -211,6 +263,7 @@ function updateTrackList(trackcontainer) {
         li.appendChild(newStartElement);
         li.appendChild(newStopElement);
         li.appendChild(newEditElement);
+        li.appendChild(newCancelEditBtn);
         
         //li.appendChild(newSaveElement);
         li.appendChild(newTimerElement);

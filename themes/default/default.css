@@ -58,9 +58,14 @@ a, div {
   width: 1px;
 }
 
-#tracks li:hover:not(.date-separator) {
-  opacity: 0.7;
+#tracks li:hover.even:not(.date-separator) {
+  background-color: #bababa;
 }
+
+#tracks li:hover.odd:not(.date-separator) {
+  background-color: #efefef;
+}
+
 
 #tracks li:first-child {
   margin-top: 40px;
@@ -118,9 +123,18 @@ a, div {
   font-family: 'Tahoma';
   font-size: 13px;
   font-weight: 600;
+  margin-right: 12px;
   padding: 4px 8px;
   overflow: hidden;
   text-align: center;
+}
+
+.btn-default.hide {
+  display: none;
+}
+
+.btn-default.show {
+  display: inline-block;
 }
 
 #tracks .stop {
@@ -265,4 +279,19 @@ ul.menu li {
   left: 0px;
   text-align: center;
   width: 100%;
+}
+
+.edit-input {
+  display: inline-block;
+  text-align: center;
+  padding: 2px 4px;
+  width: 70px;
+}
+
+[id*='change_time'] {
+  width: 50px;
+}
+
+.edit-input + .edit-input {
+  margin-left: 12px;
 }
