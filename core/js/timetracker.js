@@ -1,14 +1,6 @@
 timetracker.queue = new Array();
 timetracker.timers = {};
 
-if (typeof timetracker.config.language!="undefined" && timetracker.config.language!="") {
-  var langScript = "lang/" + timetracker.config.language + ".js";
-  var newScript = document.createElement("script");
-  newScript.setAttribute("src", langScript);
-  newScript.setAttribute("type", "text/javascript");
-  document.head.appendChild(newScript);
-}
-
 timetracker.createTracker = function() {
   timetracker.getTrackerQueue();
 
@@ -176,7 +168,7 @@ timetracker.getTrackerQueue = function() {
 };
 
 timetracker.removeAllTrackerContent = function() {
-  if (window.confirm(timetracker.t("Are you sure?"))==true) {
+  if (window.confirm(timetracker.t("are you sure?"))==true) {
     if (typeof timetracker.queue!="undefined") {
       for (var i in timetracker.queue) {
         if (typeof timetracker.queue[i]!="undefined" && timetracker.queue[i]!=null) {
@@ -253,9 +245,7 @@ timetracker.getContainer = function() {
   }
 }
 
-timetracker.t = function(a, b) {
-  var b = b || new Array();
-
+timetracker.t = function(a) {
   if (typeof contents[a]!="undefined") {
     return contents[a];
   }
@@ -425,6 +415,25 @@ timetracker.getOption = function(oKey) {
   }
 }
 
+timetracker.getAllChangeableOptions = function() {
+  return timetracker.configTypes;
+}
+
 function escapeRegExp(str) {
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+}
+
+
+if (typeof timetracker.config.language!="undefined" && timetracker.config.language!="") {
+  var language = timetracker.config.language;
+
+  if (timetracker.getOption("language")!=null) {
+    language = timetracker.getOption("language")[1];
+  }
+
+  var langScript = "lang/" + language + ".js";
+  var newScript = document.createElement("script");
+  newScript.setAttribute("src", langScript);
+  newScript.setAttribute("type", "text/javascript");
+  document.head.appendChild(newScript);
 }

@@ -3,14 +3,27 @@ var daysShort = ['So','Mo','Di','Mi','Do','Fr','Sa'];
 var months = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
 
 var contents = {
-  'Start' : 'Start',
-  'Stop' : 'Stop',
-  'Save changes': 'Änderungen speichern',
+  'start' : 'Start',
+  'stop' : 'Stop',
+  'save changes': 'Änderungen speichern',
   'create': 'Neues Tracking erstellen',
   'delete': 'ausgewählte Trackings löschen',
   'double click to make changes': 'doppelclick für Änderungen',
-  'Are you sure?' : "Sind Sie sicher?",
+  'are you sure?' : "Sind Sie sicher?",
   'no entries found' : 'keine Einträge gefunden',
   'period of time' : 'Zeitraum',
-  'to' : 'bis'
+  'to' : 'bis',
+  'settings' : 'Einstellungen',
+  'language' : 'Sprache',
+  'theme' : 'Theme',
+  'reload page' : 'Seite neuladen?',
+  'default' : 'Standard',
+  'de' : 'Deutsch',
+  'close' : 'Schliessen',
+  'an error occured. changes cancelled' : 'Ein Fehler ist aufgetreten. Alle Änderungen wurden widerrufen.',
+  'save' : 'Speichern',
+  'edit' : 'Ändern',
+  'cancel' : 'Abbrechen',
+  'project_on_github' : 'Projekt auf Github',
+  'check for updates' : 'Check for updates',
 };

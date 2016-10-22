@@ -1,7 +1,10 @@
 body {
   font-family: Verdana;
   font-size: 12px;
+  height: 100%;
   margin: 0px;
+  position: absolute;
+  width: 100%;
 }
 
 a, div {
@@ -55,9 +58,14 @@ a, div {
   width: 1px;
 }
 
-#tracks li:hover:not(.date-separator) {
-  opacity: 0.7;
+#tracks li:hover.even:not(.date-separator) {
+  background-color: #bababa;
 }
+
+#tracks li:hover.odd:not(.date-separator) {
+  background-color: #efefef;
+}
+
 
 #tracks li:first-child {
   margin-top: 40px;
@@ -82,6 +90,13 @@ a, div {
   }
 }
 
+@media (min-width: 1200px) {
+  #tracks .content {
+    min-height: 50px;
+    min-width: 800px;
+  }
+}
+
 #tracks .content[data-write='disabled'] {
   background-color: #ddd;
   color: #444;
@@ -99,15 +114,27 @@ a, div {
   float: right;
 }
 
-#tracks .start, #tracks .stop {
+#tracks .start, #tracks .stop, .btn-default {
   background: #fff;
   border: 2px solid #000;
   color: #000;
+  cursor: pointer;
+  display: inline-block;
   font-family: 'Tahoma';
   font-size: 13px;
   font-weight: 600;
+  margin-right: 12px;
   padding: 4px 8px;
   overflow: hidden;
+  text-align: center;
+}
+
+.btn-default.hide {
+  display: none;
+}
+
+.btn-default.show {
+  display: inline-block;
 }
 
 #tracks .stop {
@@ -189,4 +216,83 @@ ul.menu li {
 .dateViewToLabel,
 #dateViewTo {
   margin: 10px 0px 10px 10px;
+}
+
+#settings {
+  cursor: pointer;
+  position: absolute;
+  right: 20px;
+  top: 10px;
+}
+
+#settingsPopup {
+  background: #eee;
+  height: 150px;
+  padding: 20px;
+  position: absolute;
+  right: 0px;
+  top: 40px;
+  width: 300px;
+  z-index: 999;
+
+  -webkit-box-shadow: 0px 10px 15px 0px rgba(0,0,0,0.15);
+  -moz-box-shadow: 0px 10px 15px 0px rgba(0,0,0,0.15);
+  box-shadow: 0px 10px 15px 0px rgba(0,0,0,0.15);
+}
+
+#settingsPopup.hide {
+  display: none;
+}
+
+#settingsPopup.show {
+  display: block;
+}
+
+#settingsPopup label {
+  clear: both;
+  display: block;
+  float: left;
+  margin-bottom: 10px;
+  width: 100px;
+}
+
+#settingsPopup input, #settingsPopup select, #settingsPopup a {
+  display: block;
+  float: right;
+  margin-bottom: 10px;
+  width: 200px;
+}
+
+#settingsPopupSaveBtn {
+  clear: both;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.settings-popup-close {
+  background: #000;
+  bottom: 0px;
+  color: #fff;
+  cursor: pointer;
+  height: 30px;
+  line-height: 30px;
+  position: absolute;
+  left: 0px;
+  text-align: center;
+  width: 100%;
+}
+
+.edit-input {
+  display: inline-block;
+  text-align: center;
+  padding: 2px 4px;
+  width: 70px;
+}
+
+[id*='change_time'] {
+  width: 50px;
+}
+
+.edit-input + .edit-input {
+  margin-left: 12px;
 }

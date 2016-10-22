@@ -60,6 +60,7 @@ function updateTrackList(trackcontainer) {
         var newTimerElement = document.createElement("div");
         var newStartElement = document.createElement("a");
         var newStopElement = document.createElement("a");
+        var newEditElement = document.createElement("a");
 
         newTimerElement.setAttribute("class", "timeshow");
         newTimerElement.innerHTML = timetracker.getTimeFromMilliseconds((queue[i].timeend-queue[i].timestart));
@@ -77,8 +78,8 @@ function updateTrackList(trackcontainer) {
           newStopElement.setAttribute("data-active", "true");
           timetracker.startTracker(queue[i].id, newTimerElement, newStopElement);
         }, true);
-        newStartElement.innerHTML = timetracker.t("Start");
-        newStartElement.setAttribute("title", timetracker.t("Start"));
+        newStartElement.innerHTML = timetracker.t("start");
+        newStartElement.setAttribute("title", timetracker.t("start"));
         
         newStopElement.setAttribute("class", "stop");
         newStopElement.addEventListener("click", function(){
@@ -86,8 +87,125 @@ function updateTrackList(trackcontainer) {
           newStopElement.setAttribute("data-active", "false");
           timetracker.stopTracker(queue[i].id, newStopElement);
         }, true);
-        newStopElement.innerHTML = timetracker.t("Stop");
-        newStopElement.setAttribute("title", timetracker.t("Stop"));
+        newStopElement.innerHTML = timetracker.t("stop");
+        newStopElement.setAttribute("title", timetracker.t("stop"));
+
+        newEditElement.setAttribute("class", "edit");
+        newEditElement.innerHTML = timetracker.t("edit");
+        newEditElement.setAttribute("title", timetracker.t("edit"));
+        newEditElement.setAttribute("class", "btn-default");
+        newEditElement.setAttribute("data-state", "edit");
+
+        newEditElement.addEventListener("click", function(){
+          if (newEditElement.getAttribute("data-state")=="edit") {
+            newStartElement.setAttribute("data-active", "true");
+            newStopElement.setAttribute("data-active", "false");
+            newEditElement.setAttribute("data-state", "save");
+
+            timetracker.stopTracker(queue[i].id, newStopElement);
+            
+            for (var k in li.childNodes) {
+              if (typeof li.childNodes[k].getAttribute!="undefined"
+                && typeof li.childNodes[k].getAttribute("class")!="undefined"
+                && li.childNodes[k].getAttribute("class")=="timeshow"
+                && document.getElementById("change_time"+queue[i].id)==null
+              ) {
+                newEditElement.setAttribute("title", timetracker.t("save"));
+                newEditElement.innerHTML = timetracker.t("save");
+                newStartElement.setAttribute("data-active", "false");
+
+                document.getElementById("cancel" + queue[i].id).setAttribute("class", "btn-default show");
+
+                var newInputTime = document.createElement("input");
+                newInputTime.setAttribute("id", "change_time"+queue[i].id);
+                newInputTime.setAttribute("class", "edit-input");
+                newInputTime.value = timetracker.getTimeFromMilliseconds((queue[i].timeend-queue[i].timestart));
+
+                var newInputDate = document.createElement("input");
+                newInputDate.setAttribute("id", "change_date"+queue[i].id);
+                newInputDate.setAttribute("class", "edit-input");
+                
+                var startDate = timetracker.getCurrentDateFromTimestamp(timetracker.queue[queue[i].id].timestart);
+                newInputDate.value = startDate;
+
+                li.childNodes[k].innerHTML = "";
+                li.childNodes[k].appendChild(newInputTime);
+                li.childNodes[k].appendChild(newInputDate);
+
+                var changeDateDatepicker = new Datepicker(
+                  newInputDate,
+                  timetracker.queue[queue[i].id].timestart,
+                  function(e) {
+                    newInputDate.setAttribute("value", e.getAttribute("data-days") );
+                    newInputDate.value = timetracker.getDateFromDays( e.getAttribute("data-days") );
+                    newInputDate.setAttribute("value", newInputDate.value);
+                    changeDateDatepicker.hide();
+                  },
+                  {
+                    "months" : months,
+                    "days" : daysShort
+                  }
+                );
+
+                newInputDate.addEventListener("focus", function(e){
+                  changeDateDatepicker.show(e);
+                }, true);
+              }
+            }
+          } else {
+            newEditElement.setAttribute("data-state", "edit");
+            newEditElement.setAttribute("title", timetracker.t("edit"));
+            newEditElement.innerHTML = timetracker.t("edit");
+
+            for (var k in li.childNodes) {
+              if (typeof li.childNodes[k].getAttribute!="undefined"
+                && typeof li.childNodes[k].getAttribute("class")!="undefined"
+                && li.childNodes[k].getAttribute("class")=="timeshow"
+                && document.getElementById("change_time"+queue[i].id)!=null
+              ) {
+                var newTimeValue = document.getElementById("change_time"+queue[i].id).value;
+                var newDateValue = document.getElementById("change_date"+queue[i].id).value;
+
+                document.getElementById("cancel" + queue[i].id).setAttribute("class", "btn-default hide");
+
+                try {
+                  newTimeValue = newTimeValue.split(":");
+
+                  var newHours = newTimeValue[0];
+                  var newMinutes = newTimeValue[1];
+                  var newSeconds = newTimeValue[2];
+
+                  newTimeValue = (parseInt(newHours*60*60) + parseInt(newMinutes*60) + parseInt(newSeconds)) * 1000;
+
+                  li.childNodes[k].innerHTML = timetracker.getTimeFromMilliseconds(newTimeValue);
+
+                  var dateTimestamp = timetracker.getTimestampFromDate(newDateValue);
+                  timetracker.queue[queue[i].id].timestart = dateTimestamp;
+                  timetracker.queue[queue[i].id].date = timetracker.getTimestampInDays(dateTimestamp);
+
+                  timetracker.queue[queue[i].id].timeend = parseInt(timetracker.queue[queue[i].id].timestart) + parseInt(newTimeValue);
+                  
+                  timetracker.saveTracker(queue[i].id);
+
+                  updateTrackList(tracks);
+                } catch(e) {
+                  alert(timetracker.t("an error occured. changes cancelled"));
+                }
+              }
+            }
+
+          }
+        }, true);
+
+        var newCancelEditBtn = document.createElement("a");
+        newCancelEditBtn.setAttribute("id", "cancel" + queue[i].id);
+        newCancelEditBtn.setAttribute("class", "btn-default hide");
+        newCancelEditBtn.setAttribute("title", timetracker.t("cancel"));
+        newCancelEditBtn.innerHTML = timetracker.t("cancel");
+
+        newCancelEditBtn.addEventListener("click", function(){
+          updateTrackList(tracks);
+        }, true);
 
         var contentElement = document.createElement("textarea");
         contentElement.setAttribute("class", "content");
@@ -144,6 +262,9 @@ function updateTrackList(trackcontainer) {
         li.appendChild(contentElement);
         li.appendChild(newStartElement);
         li.appendChild(newStopElement);
+        li.appendChild(newEditElement);
+        li.appendChild(newCancelEditBtn);
+        
         //li.appendChild(newSaveElement);
         li.appendChild(newTimerElement);
         trackcontainer.appendChild(li);
@@ -194,8 +315,109 @@ window.onload = function() {
   var dateView = document.createElement("form");
   dateView.setAttribute("class", "menu");
 
+  var settingsBtn = document.createElement("div");
+  settingsBtn.setAttribute("id", "settings");
+  settingsBtn.innerHTML = "<span>" + timetracker.t("settings") + "</span>";
+
+  settingsPopup = document.createElement("div");
+  settingsPopup.setAttribute("id", "settingsPopup");
+  settingsPopup.setAttribute("class", "hide");
+
+  var settingsPopupClose = document.createElement("div");
+  settingsPopupClose.setAttribute("class", "settings-popup-close");
+  settingsPopupClose.innerHTML = timetracker.t("close");
+
+  settingsPopupClose.addEventListener("click", function(){
+    settingsPopup.setAttribute("class", "hide");
+  }, true);
+
+  settingsPopup.appendChild(settingsPopupClose);
+
+  var options = timetracker.getAllChangeableOptions();
+
+  for (var i in options) {
+    var newOptionLabel = document.createElement("label");
+    var newOptionInput = "input";
+    var currentOption = timetracker.getOption(i);
+
+    if (timetracker.configTypes[i].type!="input") {
+      newOptionInput = timetracker.configTypes[i].type;
+
+      if (timetracker.configTypes[i].type=="select") {
+        newOptionInput = document.createElement(newOptionInput);
+
+        for (var k in timetracker.configTypes[i].values) {
+          var option = document.createElement("option");
+          option.setAttribute("value", timetracker.configTypes[i].values[k]);
+          option.innerHTML = timetracker.t(timetracker.configTypes[i].values[k]);
+
+          if (currentOption[1]==timetracker.configTypes[i].values[k]) {
+            option.setAttribute("selected", "selected");
+          }
+
+          newOptionInput.appendChild(option);
+        }
+      }
+
+      if (timetracker.configTypes[i].type=="link") {
+        newOptionInput = document.createElement("a");
+        newOptionInput.setAttribute("href", timetracker.configTypes[i].href);
+        newOptionInput.setAttribute("target", timetracker.configTypes[i].target);
+        newOptionInput.innerHTML = timetracker.t(timetracker.configTypes[i].text);
+      }
+    } else {
+      newOptionInput = document.createElement(newOptionInput);
+      newOptionInput.value = currentOption[1];
+    }
+
+    newOptionLabel.innerHTML = timetracker.t(i);
+    newOptionInput.setAttribute("name", i);
+
+    settingsPopup.appendChild(newOptionLabel);
+    settingsPopup.appendChild(newOptionInput);
+  }
+
+  settingsPopupSaveBtn = document.createElement("div");
+  settingsPopupSaveBtn.innerHTML = timetracker.t("save changes");
+  settingsPopupSaveBtn.setAttribute("id", "settingsPopupSaveBtn");
+  settingsPopupSaveBtn.setAttribute("class", "btn-default");
+
+  settingsPopupSaveBtn.addEventListener("click", function(){
+    var settings = settingsPopup.childNodes;
+
+    for (var i in settings) {
+      if (settings[i].nodeName=="INPUT" || settings[i].nodeName=="SELECT" || settings[i].nodeName=="TEXTAREA") {        
+        timetracker.setOption(
+          settings[i].getAttribute("name"),
+          settings[i].value
+        );
+      }
+    }
+
+    var winConfirm = window.confirm(timetracker.t("reload page"));
+
+    if (winConfirm==true) {
+      location.reload();
+    }
+  }, true);
+  
+  settingsPopup.appendChild(settingsPopupSaveBtn);
+
+  settingsBtn.addEventListener("click", function(){
+    var settingsPopup = document.getElementById("settingsPopup");
+
+    if (settingsPopup.getAttribute("class")=="hide") {
+      settingsPopup.setAttribute("class", "show");
+    } else {
+      settingsPopup.setAttribute("class", "hide");
+    }
+  }, true);
+
   var form = document.createElement("form");
   form.setAttribute("id", "formTimetracks");
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+  }, true);
 
   var tracks = document.createElement("ul");
   tracks.setAttribute("id", "tracks");
@@ -233,6 +455,8 @@ window.onload = function() {
   dateView.appendChild(dateViewToLabel);
   dateView.appendChild(dateViewTo);
   container.appendChild(dateView);
+  dateView.appendChild(settingsBtn);
+  dateView.appendChild(settingsPopup);
   container.appendChild(form);
 
   var savedDateFrom = timetracker.getOption("dateFrom");
