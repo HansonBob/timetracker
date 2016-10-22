@@ -168,7 +168,7 @@ timetracker.getTrackerQueue = function() {
 };
 
 timetracker.removeAllTrackerContent = function() {
-  if (window.confirm(timetracker.t("Are you sure?"))==true) {
+  if (window.confirm(timetracker.t("are you sure?"))==true) {
     if (typeof timetracker.queue!="undefined") {
       for (var i in timetracker.queue) {
         if (typeof timetracker.queue[i]!="undefined" && timetracker.queue[i]!=null) {

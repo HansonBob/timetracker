@@ -113,6 +113,8 @@ a, div {
   background: #fff;
   border: 2px solid #000;
   color: #000;
+  cursor: pointer;
+  display: inline-block;
   font-family: 'Tahoma';
   font-size: 13px;
   font-weight: 600;

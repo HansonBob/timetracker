@@ -3,13 +3,13 @@ var daysShort = ['Su','Mo','Tu','We','Th','Fr','Sa'];
 var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 var contents = {
-  'Start' : 'Start',
-  'Stop' : 'Stop',
-  'Save changes': 'Save changes',
+  'start' : 'Start',
+  'stop' : 'Stop',
+  'save changes': 'Save changes',
   'create': 'Create new tracking',
   'delete': 'Delete selected tracking',
   'double click to make changes': 'Double click to make change',
-  'Are you sure?' : 'Are you sure?',
+  'are you sure?' : 'Are you sure?',
   'no entries found' : 'No entries found',
   'period of time' : 'Period of time',
   'to' : 'to',
@@ -21,4 +21,5 @@ var contents = {
   'default' : 'Default',
   'de' : 'Deutsch',
   'close' : 'Close',
+  'an error occured. changes cancelled' : 'An error occured. Changes cancelled.',
 };
