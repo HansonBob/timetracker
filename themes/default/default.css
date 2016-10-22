@@ -1,7 +1,10 @@
 body {
   font-family: Verdana;
   font-size: 12px;
+  height: 100%;
   margin: 0px;
+  position: absolute;
+  width: 100%;
 }
 
 a, div {
@@ -79,6 +82,13 @@ a, div {
   #tracks .content {
     min-height: 50px;
     min-width: 600px;
+  }
+}
+
+@media (min-width: 1200px) {
+  #tracks .content {
+    min-height: 50px;
+    min-width: 800px;
   }
 }
 
