@@ -204,7 +204,7 @@ window.onload = function() {
 
   var settingsPopupClose = document.createElement("div");
   settingsPopupClose.setAttribute("class", "settings-popup-close");
-  settingsPopupClose.innerHTML = "x";
+  settingsPopupClose.innerHTML = timetracker.t("close");
 
   settingsPopupClose.addEventListener("click", function(){
     settingsPopup.setAttribute("class", "hide");
@@ -277,10 +277,6 @@ window.onload = function() {
 
   settingsBtn.addEventListener("click", function(){
     var settingsPopup = document.getElementById("settingsPopup");
-    var leftPos = window.innerWidth/2;
-    var topPos = window.innerHeight/2;
-    
-    settingsPopup.setAttribute("style", "left:"+leftPos+"px; top:"+topPos+"px;");
 
     if (settingsPopup.getAttribute("class")=="hide") {
       settingsPopup.setAttribute("class", "show");

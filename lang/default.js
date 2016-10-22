@@ -20,4 +20,5 @@ var contents = {
   'reload page' : 'Reload page?',
   'default' : 'Default',
   'de' : 'Deutsch',
+  'close' : 'Close',
 };
