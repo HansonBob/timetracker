@@ -232,7 +232,7 @@ ul.menu li {
 
 #settingsPopup {
   background: #eee;
-  height: 150px;
+  height: 210px;
   padding: 20px;
   position: absolute;
   right: 0px;
@@ -263,7 +263,7 @@ ul.menu li {
 
 #settingsPopup input, #settingsPopup select, #settingsPopup a {
   display: block;
-  float: right;
+  float: left;
   margin-bottom: 10px;
   width: 200px;
 }
@@ -271,6 +271,7 @@ ul.menu li {
 #settingsPopupSaveBtn {
   clear: both;
   cursor: pointer;
+  float: left;
   margin-top: 10px;
 }
 
@@ -300,4 +301,10 @@ ul.menu li {
 
 .edit-input + .edit-input {
   margin-left: 12px;
+}
+
+.version_info {
+  float: left;
+  font-weight: bold;
+  margin-top: 12px;
 }

@@ -26,4 +26,5 @@ var contents = {
   'cancel' : 'Abbrechen',
   'project_on_github' : 'Projekt auf Github',
   'check for updates' : 'Check for updates',
+  'version_info' : 'Version',
 };

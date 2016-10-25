@@ -366,12 +366,19 @@ window.onload = function() {
         newOptionInput.setAttribute("target", timetracker.configTypes[i].target);
         newOptionInput.innerHTML = timetracker.t(timetracker.configTypes[i].text);
       }
+
+      if (timetracker.configTypes[i].type=="text") {
+        newOptionInput = document.createElement("div");
+        newOptionInput.setAttribute("class", i);
+        newOptionInput.innerHTML = timetracker.t(timetracker.configTypes[i].value);
+      }
     } else {
       newOptionInput = document.createElement(newOptionInput);
       newOptionInput.value = currentOption[1];
     }
 
     newOptionLabel.innerHTML = timetracker.t(i);
+    newOptionLabel.setAttribute("class", i);
     newOptionInput.setAttribute("name", i);
 
     settingsPopup.appendChild(newOptionLabel);
