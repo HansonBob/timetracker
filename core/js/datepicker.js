@@ -1,4 +1,4 @@
-function Datepicker(element, milliseconds, clickCallback, localLabels) {
+function Datepicker(element, milliseconds, clickCallback, localLabels, overlayHeight) {
   if (typeof element!="undefined") {
     var date = new Date();
     var startTimestamp = date.getTime();
@@ -114,9 +114,9 @@ function Datepicker(element, milliseconds, clickCallback, localLabels) {
 
     newDivOverlay.setAttribute("class", "datepicker-overlay");
 
-    var winHeight = window.innerHeight;
+    var overlayHeight = overlayHeight || window.innerHeight;
 
-    newDivOverlay.setAttribute("style", "height:"+winHeight+"px;");
+    newDivOverlay.setAttribute("style", "height:"+overlayHeight+"px;");
     newDivOverlay.addEventListener("click", function(){
       hide();
     }, true);

@@ -144,7 +144,8 @@ function updateTrackList(trackcontainer) {
                   {
                     "months" : months,
                     "days" : daysShort
-                  }
+                  },
+                  document.getElementById("tracks").scrollHeight
                 );
 
                 newInputDate.addEventListener("focus", function(e){
@@ -351,7 +352,7 @@ window.onload = function() {
           option.setAttribute("value", timetracker.configTypes[i].values[k]);
           option.innerHTML = timetracker.t(timetracker.configTypes[i].values[k]);
 
-          if (currentOption[1]==timetracker.configTypes[i].values[k]) {
+          if (currentOption!=null && currentOption[1]==timetracker.configTypes[i].values[k]) {
             option.setAttribute("selected", "selected");
           }
 
@@ -365,12 +366,19 @@ window.onload = function() {
         newOptionInput.setAttribute("target", timetracker.configTypes[i].target);
         newOptionInput.innerHTML = timetracker.t(timetracker.configTypes[i].text);
       }
+
+      if (timetracker.configTypes[i].type=="text") {
+        newOptionInput = document.createElement("div");
+        newOptionInput.setAttribute("class", i);
+        newOptionInput.innerHTML = timetracker.t(timetracker.configTypes[i].value);
+      }
     } else {
       newOptionInput = document.createElement(newOptionInput);
       newOptionInput.value = currentOption[1];
     }
 
     newOptionLabel.innerHTML = timetracker.t(i);
+    newOptionLabel.setAttribute("class", i);
     newOptionInput.setAttribute("name", i);
 
     settingsPopup.appendChild(newOptionLabel);
@@ -477,7 +485,8 @@ window.onload = function() {
     {
       "months" : months,
       "days" : daysShort
-    }
+    },
+    document.getElementById("tracks").scrollHeight
   );
 
   var savedDateTo = timetracker.getOption("dateTo");
@@ -498,7 +507,8 @@ window.onload = function() {
     {
       "months" : months,
       "days" : daysShort
-    }
+    },
+    document.getElementById("tracks").scrollHeight
   );
 
   updateTrackList(tracks);

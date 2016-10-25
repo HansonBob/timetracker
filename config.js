@@ -1,6 +1,6 @@
 var timetracker = timetracker || {};
 
-timetracker["version"] = "0.45";
+timetracker["version"] = "0.45a";
 
 timetracker.config = {
   "savetype" : "localStorage",
@@ -20,6 +20,10 @@ timetracker.configTypes = {
   "theme" : {
     "type" : "select",
     "values" : new Array('default')
+  },
+  "version_info" : {
+    "type" : "text",
+    "value" : timetracker["version"]
   },
   "project_on_github" : {
     "type" : "link",
