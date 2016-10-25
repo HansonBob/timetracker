@@ -32,13 +32,19 @@ a, div {
   color: #fff;
 }
 
-#tracks {
+#formTimetracks {
   height: 100%;
-  list-style: none;
   margin: 0px;
   overflow: auto;
   padding: 0px;
   position: absolute;
+  width: 100%;
+}
+
+#tracks {
+  list-style: none;
+  margin: 0px;
+  padding: 0px;
   width: 100%;
 }
 

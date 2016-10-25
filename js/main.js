@@ -144,7 +144,8 @@ function updateTrackList(trackcontainer) {
                   {
                     "months" : months,
                     "days" : daysShort
-                  }
+                  },
+                  document.getElementById("tracks").scrollHeight
                 );
 
                 newInputDate.addEventListener("focus", function(e){
@@ -477,7 +478,8 @@ window.onload = function() {
     {
       "months" : months,
       "days" : daysShort
-    }
+    },
+    document.getElementById("tracks").scrollHeight
   );
 
   var savedDateTo = timetracker.getOption("dateTo");
@@ -498,7 +500,8 @@ window.onload = function() {
     {
       "months" : months,
       "days" : daysShort
-    }
+    },
+    document.getElementById("tracks").scrollHeight
   );
 
   updateTrackList(tracks);
