@@ -351,7 +351,7 @@ window.onload = function() {
           option.setAttribute("value", timetracker.configTypes[i].values[k]);
           option.innerHTML = timetracker.t(timetracker.configTypes[i].values[k]);
 
-          if (currentOption[1]==timetracker.configTypes[i].values[k]) {
+          if (currentOption!=null && currentOption[1]==timetracker.configTypes[i].values[k]) {
             option.setAttribute("selected", "selected");
           }
 
